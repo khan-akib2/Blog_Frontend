@@ -34,12 +34,12 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen w-full overflow-hidden" style={{ background: '#0a0a0f' }}>
+    <div className="flex min-h-screen w-full overflow-hidden bg-white">
 
       {/* ── LEFT — dark form panel ── */}
       <div className="flex flex-1 flex-col items-center justify-center px-10 py-16 relative">
         <div className="w-full max-w-sm">
-          <h1 className="mb-2 text-5xl font-bold text-white font-serif">Login</h1>
+          <h1 className="mb-2 text-5xl font-bold text-gray-900 font-serif">Login</h1>
           <p className="mb-10 text-sm text-gray-500">Sign in to your account to continue</p>
 
           <form onSubmit={handleSubmit} className="space-y-8">
@@ -51,9 +51,9 @@ export default function LoginPage() {
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder="Email"
-                className="w-full border-b border-gray-700 bg-transparent py-3 pr-8 text-sm text-white placeholder-gray-600 focus:border-blue-500 focus:outline-none transition-colors"
+                className="w-full border-b border-gray-300 bg-transparent py-3 pr-8 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors"
               />
-              <Mail className="absolute right-0 top-3 h-4 w-4 text-gray-600" />
+              <Mail className="absolute right-0 top-3 h-4 w-4 text-gray-400" />
             </div>
 
             {/* Password */}
@@ -64,12 +64,12 @@ export default function LoginPage() {
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                 placeholder="Password"
-                className="w-full border-b border-gray-700 bg-transparent py-3 pr-8 text-sm text-white placeholder-gray-600 focus:border-blue-500 focus:outline-none transition-colors"
+                className="w-full border-b border-gray-300 bg-transparent py-3 pr-8 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors"
               />
               <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-0 top-3">
                 {showPassword
-                  ? <EyeOff className="h-4 w-4 text-gray-600" />
-                  : <Lock className="h-4 w-4 text-gray-600" />}
+                  ? <EyeOff className="h-4 w-4 text-gray-400" />
+                  : <Lock className="h-4 w-4 text-gray-400" />}
               </button>
             </div>
 
@@ -99,7 +99,7 @@ export default function LoginPage() {
         <div
           className="absolute inset-0 z-10"
           style={{
-            background: '#0a0a0f',
+            background: '#ffffff',
             clipPath: 'polygon(0 0, 30% 0, 0 100%)',
           }}
         />

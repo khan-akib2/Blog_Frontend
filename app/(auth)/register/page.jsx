@@ -30,7 +30,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen w-full overflow-hidden" style={{ background: '#0a0a0f' }}>
+    <div className="flex min-h-screen w-full overflow-hidden bg-white">
 
       {/* ── LEFT — purple panel ── */}
       <div className="relative hidden w-1/2 md:block">
@@ -45,7 +45,7 @@ export default function RegisterPage() {
         <div
           className="absolute inset-0 z-10"
           style={{
-            background: '#0a0a0f',
+            background: '#ffffff',
             clipPath: 'polygon(70% 0, 100% 0, 100% 100%)',
           }}
         />
@@ -63,7 +63,7 @@ export default function RegisterPage() {
       {/* ── RIGHT — dark form panel ── */}
       <div className="flex flex-1 flex-col items-center justify-center px-10 py-16">
         <div className="w-full max-w-sm">
-          <h1 className="mb-2 text-5xl font-bold text-white font-serif">Sign Up</h1>
+          <h1 className="mb-2 text-5xl font-bold text-gray-900 font-serif">Sign Up</h1>
           <p className="mb-10 text-sm text-gray-500">Create your account to get started</p>
 
           <form onSubmit={handleSubmit} className="space-y-7">
@@ -74,9 +74,9 @@ export default function RegisterPage() {
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="Full Name"
-                className="w-full border-b border-gray-700 bg-transparent py-3 pr-8 text-sm text-white placeholder-gray-600 focus:border-blue-500 focus:outline-none transition-colors"
+                className="w-full border-b border-gray-300 bg-transparent py-3 pr-8 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors"
               />
-              <User className="absolute right-0 top-3 h-4 w-4 text-gray-600" />
+              <User className="absolute right-0 top-3 h-4 w-4 text-gray-400" />
             </div>
 
             <div className="relative">
@@ -86,9 +86,9 @@ export default function RegisterPage() {
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder="Email"
-                className="w-full border-b border-gray-700 bg-transparent py-3 pr-8 text-sm text-white placeholder-gray-600 focus:border-blue-500 focus:outline-none transition-colors"
+                className="w-full border-b border-gray-300 bg-transparent py-3 pr-8 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors"
               />
-              <Mail className="absolute right-0 top-3 h-4 w-4 text-gray-600" />
+              <Mail className="absolute right-0 top-3 h-4 w-4 text-gray-400" />
             </div>
 
             <div className="relative">
@@ -98,10 +98,10 @@ export default function RegisterPage() {
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                 placeholder="Password"
-                className="w-full border-b border-gray-700 bg-transparent py-3 pr-8 text-sm text-white placeholder-gray-600 focus:border-blue-500 focus:outline-none transition-colors"
+                className="w-full border-b border-gray-300 bg-transparent py-3 pr-8 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors"
               />
               <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-0 top-3">
-                {showPassword ? <EyeOff className="h-4 w-4 text-gray-600" /> : <Lock className="h-4 w-4 text-gray-600" />}
+                {showPassword ? <EyeOff className="h-4 w-4 text-gray-400" /> : <Lock className="h-4 w-4 text-gray-400" />}
               </button>
             </div>
 
@@ -112,9 +112,9 @@ export default function RegisterPage() {
                 value={form.confirm}
                 onChange={(e) => setForm({ ...form, confirm: e.target.value })}
                 placeholder="Confirm Password"
-                className="w-full border-b border-gray-700 bg-transparent py-3 pr-8 text-sm text-white placeholder-gray-600 focus:border-blue-500 focus:outline-none transition-colors"
+                className="w-full border-b border-gray-300 bg-transparent py-3 pr-8 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors"
               />
-              <Lock className="absolute right-0 top-3 h-4 w-4 text-gray-600" />
+              <Lock className="absolute right-0 top-3 h-4 w-4 text-gray-400" />
             </div>
 
             <button
