@@ -34,12 +34,12 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen w-full overflow-hidden bg-white">
+    <div className="flex min-h-screen w-full overflow-hidden bg-white dark:bg-[#0a0a0f] transition-colors duration-300">
 
       {/* ── LEFT — dark form panel ── */}
       <div className="flex flex-1 flex-col items-center justify-center px-10 py-16 relative">
         <div className="w-full max-w-sm">
-          <h1 className="mb-2 text-5xl font-bold text-gray-900 font-serif">Login</h1>
+          <h1 className="mb-2 text-5xl font-bold text-gray-900 dark:text-white font-serif transition-colors">Login</h1>
           <p className="mb-10 text-sm text-gray-500">Sign in to your account to continue</p>
 
           <form onSubmit={handleSubmit} className="space-y-8">
@@ -51,9 +51,9 @@ export default function LoginPage() {
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder="Email"
-                className="w-full border-b border-gray-300 bg-transparent py-3 pr-8 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors"
+                className="w-full border-b border-gray-300 dark:border-gray-700 bg-transparent py-3 pr-8 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:border-blue-500 focus:outline-none transition-colors"
               />
-              <Mail className="absolute right-0 top-3 h-4 w-4 text-gray-400" />
+              <Mail className="absolute right-0 top-3 h-4 w-4 text-gray-400 dark:text-gray-600 transition-colors" />
             </div>
 
             {/* Password */}
@@ -64,12 +64,12 @@ export default function LoginPage() {
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                 placeholder="Password"
-                className="w-full border-b border-gray-300 bg-transparent py-3 pr-8 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-colors"
+                className="w-full border-b border-gray-300 dark:border-gray-700 bg-transparent py-3 pr-8 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:border-blue-500 focus:outline-none transition-colors"
               />
               <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-0 top-3">
                 {showPassword
-                  ? <EyeOff className="h-4 w-4 text-gray-400" />
-                  : <Lock className="h-4 w-4 text-gray-400" />}
+                  ? <EyeOff className="h-4 w-4 text-gray-400 dark:text-gray-600 transition-colors" />
+                  : <Lock className="h-4 w-4 text-gray-400 dark:text-gray-600 transition-colors" />}
               </button>
             </div>
 
@@ -95,11 +95,10 @@ export default function LoginPage() {
 
       {/* ── DIAGONAL DIVIDER + RIGHT purple panel ── */}
       <div className="relative hidden w-1/2 md:block">
-        {/* Diagonal cut — black triangle over purple */}
+        {/* Diagonal cut — black/white triangle over blue */}
         <div
-          className="absolute inset-0 z-10"
+          className="absolute inset-0 z-10 bg-white dark:bg-[#0a0a0f] transition-colors duration-300"
           style={{
-            background: '#ffffff',
             clipPath: 'polygon(0 0, 30% 0, 0 100%)',
           }}
         />
