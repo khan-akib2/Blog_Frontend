@@ -51,7 +51,7 @@ export default function LoginPage() {
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder="Email"
-                className="w-full border-b border-gray-700 bg-transparent py-3 pr-8 text-sm text-white placeholder-gray-600 focus:border-purple-500 focus:outline-none transition-colors"
+                className="w-full border-b border-gray-700 bg-transparent py-3 pr-8 text-sm text-white placeholder-gray-600 focus:border-blue-500 focus:outline-none transition-colors"
               />
               <Mail className="absolute right-0 top-3 h-4 w-4 text-gray-600" />
             </div>
@@ -64,7 +64,7 @@ export default function LoginPage() {
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                 placeholder="Password"
-                className="w-full border-b border-gray-700 bg-transparent py-3 pr-8 text-sm text-white placeholder-gray-600 focus:border-purple-500 focus:outline-none transition-colors"
+                className="w-full border-b border-gray-700 bg-transparent py-3 pr-8 text-sm text-white placeholder-gray-600 focus:border-blue-500 focus:outline-none transition-colors"
               />
               <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-0 top-3">
                 {showPassword
@@ -78,14 +78,14 @@ export default function LoginPage() {
               type="submit"
               disabled={loading}
               className="w-full rounded-full py-3.5 text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-50"
-              style={{ background: 'linear-gradient(135deg, #7c3aed, #5b21b6)', boxShadow: '0 4px 20px rgba(124,58,237,0.5)' }}
+              style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', boxShadow: '0 4px 20px rgba(59,130,246,0.5)' }}
             >
               {loading ? <Loader2 className="mx-auto h-5 w-5 animate-spin" /> : 'Login'}
             </button>
 
             <p className="text-center text-sm text-gray-500">
               Don&apos;t have an account?{' '}
-              <Link href="/register" className="font-semibold text-purple-400 hover:text-purple-300 transition-colors">
+              <Link href="/register" className="font-semibold text-blue-400 hover:text-blue-300 transition-colors">
                 Sign Up
               </Link>
             </p>
@@ -103,11 +103,11 @@ export default function LoginPage() {
             clipPath: 'polygon(0 0, 30% 0, 0 100%)',
           }}
         />
-        {/* Purple gradient background */}
+        {/* Blue gradient background */}
         <div
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(160deg, #2d1b69 0%, #5b21b6 40%, #7c3aed 100%)',
+            background: 'linear-gradient(160deg, #1e3a8a 0%, #1d4ed8 40%, #3b82f6 100%)',
           }}
         />
         {/* Content */}
@@ -115,7 +115,7 @@ export default function LoginPage() {
           <h2 className="mb-4 text-6xl font-extrabold uppercase leading-tight tracking-wide text-white">
             WELCOME<br />BACK!
           </h2>
-          <p className="text-base leading-relaxed text-purple-200">
+          <p className="text-base leading-relaxed text-blue-200">
             Sign in to explore, write, and share<br />your stories with the world.
           </p>
         </div>
