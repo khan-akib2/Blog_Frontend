@@ -11,9 +11,9 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
-        serif: ['var(--font-playfair)', 'Georgia', 'serif'],
-        mono: ['var(--font-mono)', 'monospace'],
+        sans:  ['var(--font-sans)',  '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        serif: ['var(--font-serif)', 'Georgia', 'serif'],
+        mono:  ['var(--font-mono)',  'monospace'],
       },
       colors: {
         // Dark theme palette (from screenshot)

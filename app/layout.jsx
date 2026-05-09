@@ -1,32 +1,48 @@
-import { Inter, Playfair_Display, JetBrains_Mono } from 'next/font/google';
+import { Plus_Jakarta_Sans, Cormorant_Garamond, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { AuthProvider } from '@/context/AuthContext';
 import { Toaster } from 'react-hot-toast';
 
-const inter = Inter({ variable: '--font-inter', subsets: ['latin'], display: 'swap' });
-const playfair = Playfair_Display({ variable: '--font-playfair', subsets: ['latin'], display: 'swap' });
-const jetbrainsMono = JetBrains_Mono({ variable: '--font-mono', subsets: ['latin'], display: 'swap' });
+const jakarta = Plus_Jakarta_Sans({
+  variable: '--font-sans',
+  subsets: ['latin'],
+  display: 'swap',
+  weight: ['300', '400', '500', '600', '700', '800'],
+});
+
+const cormorant = Cormorant_Garamond({
+  variable: '--font-serif',
+  subsets: ['latin'],
+  display: 'swap',
+  weight: ['300', '400', '500', '600', '700'],
+  style: ['normal', 'italic'],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: '--font-mono',
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 export const metadata = {
-  title: { default: 'BlogHub - Share Your Stories', template: '%s | BlogHub' },
-  description: 'A modern platform to read, write, and share amazing blog posts.',
+  title: { default: 'BlogHub — Where Ideas Come Alive', template: '%s | BlogHub' },
+  description: 'Discover insightful articles, share your expertise, and connect with a community of passionate writers.',
   keywords: ['blog', 'writing', 'stories', 'articles'],
   openGraph: { type: 'website', siteName: 'BlogHub' },
 };
 
-// Root layout has NO navbar/footer — each route group adds its own
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable} antialiased`}>
+      <body className={`${jakarta.variable} ${cormorant.variable} ${jetbrainsMono.variable} antialiased`}>
         <ThemeProvider>
           <AuthProvider>
             {children}
             <Toaster
               position="top-right"
               toastOptions={{
-                className: 'dark:bg-gray-800 dark:text-white',
+                style: { borderRadius: '12px', fontSize: '14px' },
                 duration: 3000,
               }}
             />
