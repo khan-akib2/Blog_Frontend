@@ -18,7 +18,8 @@ async function getBlog(slug, preview = false) {
 }
 
 export async function generateMetadata({ params }) {
-  const blog = await getBlog(params.slug);
+  const resolvedParams = await params;
+  const blog = await getBlog(resolvedParams.slug);
   if (!blog) return { title: 'Blog Not Found' };
   return {
     title: blog.title,
@@ -28,8 +29,10 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function BlogPage({ params, searchParams }) {
-  const preview = searchParams?.preview === 'true';
-  const blog = await getBlog(params.slug, preview);
+  const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
+  const preview = resolvedSearchParams?.preview === 'true';
+  const blog = await getBlog(resolvedParams.slug, preview);
   if (!blog) notFound();
   return <BlogPostClient blog={blog} />;
 }
