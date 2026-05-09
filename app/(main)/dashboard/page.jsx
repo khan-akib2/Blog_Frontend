@@ -129,15 +129,14 @@ export default function DashboardPage() {
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
                 {blog.status !== 'approved' && (
-                  <Link href={`/write?edit=${blog._id}`} className="p-2 text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-colors">
+                  <Link href={`/write?edit=${blog._id}`} className="p-2 text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-colors" title="Edit">
                     <Edit className="w-4 h-4" />
                   </Link>
                 )}
-                {blog.status === 'approved' && (
-                  <Link href={`/blogs/${blog.slug}`} className="p-2 text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-colors">
-                    <Eye className="w-4 h-4" />
-                  </Link>
-                )}
+                {/* Preview own blog regardless of status */}
+                <Link href={`/blogs/${blog.slug}?preview=true`} className="p-2 text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-colors" title={blog.status === 'approved' ? 'View live' : 'Preview'}>
+                  <Eye className="w-4 h-4" />
+                </Link>
                 <button onClick={() => handleDelete(blog._id)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
                   <Trash2 className="w-4 h-4" />
                 </button>

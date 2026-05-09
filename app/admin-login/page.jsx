@@ -35,13 +35,13 @@ export default function AdminLoginPage() {
         return;
       }
 
-      // Manually set token and user — bypass AuthContext login to avoid race
+      // Store with admin-specific key so it doesn't conflict with user session
+      localStorage.setItem('admin_token', data.token);
       localStorage.setItem('token', data.token);
       api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
       updateUser(data.user);
 
       toast.success(`Welcome, ${data.user.name}`);
-      // Hard redirect so admin layout loads fresh with token already set
       window.location.href = '/admin';
     } catch (err) {
       toast.error(err.response?.data?.message || 'Invalid credentials');

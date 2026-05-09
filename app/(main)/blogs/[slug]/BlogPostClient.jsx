@@ -15,6 +15,7 @@ export default function BlogPostClient({ blog: initialBlog }) {
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState('');
   const [loadingComment, setLoadingComment] = useState(false);
+  const isPreview = blog.status !== 'approved';
 
   useEffect(() => {
     if (user) {
@@ -80,6 +81,14 @@ export default function BlogPostClient({ blog: initialBlog }) {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      {/* Preview banner */}
+      {isPreview && (
+        <div className="mb-6 flex items-center gap-3 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 px-4 py-3">
+          <span className="text-yellow-600 dark:text-yellow-400 text-sm font-medium">
+            👁 Preview mode — this blog is <span className="font-bold capitalize">{blog.status}</span> and not yet public
+          </span>
+        </div>
+      )}
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-4">

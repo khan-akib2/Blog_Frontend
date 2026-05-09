@@ -6,8 +6,8 @@ async function getHomeData() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
     const [latestRes, trendingRes] = await Promise.all([
-      fetch(`${baseUrl}/blogs?limit=6&sort=-createdAt`, { next: { revalidate: 60 } }),
-      fetch(`${baseUrl}/blogs/trending`, { next: { revalidate: 60 } }),
+      fetch(`${baseUrl}/blogs?limit=6&sort=-createdAt`, { next: { revalidate: 10 } }),
+      fetch(`${baseUrl}/blogs/trending`, { next: { revalidate: 10 } }),
     ]);
     const latest = latestRes.ok ? await latestRes.json() : { blogs: [] };
     const trending = trendingRes.ok ? await trendingRes.json() : { blogs: [] };
