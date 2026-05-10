@@ -170,7 +170,7 @@ export default function Navbar() {
             <div className="my-2 border-t border-gray-100 dark:border-[#21262d]" />
             {user ? (
               <>
-                <Link href="/write" className="rounded-lg px-3 py-2.5 text-sm font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30">✍️ Write a Blog</Link>
+                <Link href="/write" className="rounded-lg px-3 py-2.5 text-sm font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30">Write a Blog</Link>
                 <Link href="/dashboard" className="rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 dark:text-[#8b949e] hover:bg-gray-100 dark:hover:bg-[#1c2128]">Dashboard</Link>
                 <Link href="/profile" className="rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 dark:text-[#8b949e] hover:bg-gray-100 dark:hover:bg-[#1c2128]">Profile</Link>
                 {user.role === 'admin' && <Link href="/admin" className="rounded-lg px-3 py-2.5 text-sm font-medium text-blue-600 dark:text-blue-400">Admin Panel</Link>}

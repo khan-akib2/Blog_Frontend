@@ -8,7 +8,9 @@ const api = axios.create({
 // Attach token on every request
 api.interceptors.request.use((config) => {
   if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('token');
+    const token =
+      sessionStorage.getItem('user_token') ||
+      sessionStorage.getItem('admin_token');
     if (token) config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
@@ -20,9 +22,10 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401 && typeof window !== 'undefined') {
       const path = window.location.pathname;
-      const isAuthPage = path === '/login' || path === '/register' || path === '/admin-login';
+      const isAuthPage = path === '/login' || path === '/register' || path === '/admin-login' || path === '/auth';
       if (!isAuthPage) {
-        localStorage.removeItem('token');
+        sessionStorage.removeItem('user_token');
+        sessionStorage.removeItem('admin_token');
         window.location.href = '/login';
       }
     }

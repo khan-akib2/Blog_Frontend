@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, TrendingUp, PenSquare, Users, BookOpen, Zap } from 'lucide-react';
+import { ArrowRight, TrendingUp, PenSquare, Users, BookOpen, Zap, Flame, Search, CheckCircle, BarChart2, MessageSquare, Bookmark } from 'lucide-react';
 import BlogCard from '@/components/BlogCard';
 
 async function getHomeData() {
@@ -97,7 +97,7 @@ export default async function HomePage() {
           <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div className="mb-10 flex items-end justify-between">
               <div>
-                <p className="label mb-2 text-orange-500 dark:text-orange-400">🔥 Hot right now</p>
+                <p className="label mb-2 text-orange-500 dark:text-orange-400 flex items-center gap-1.5"><Flame className="w-3.5 h-3.5" /> Hot right now</p>
                 <h2 className="heading-xl text-gray-900 dark:text-[#f0f6fc]">Trending Stories</h2>
               </div>
               <Link href="/blogs?sort=-views" className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline underline-offset-4">
@@ -115,7 +115,7 @@ export default async function HomePage() {
       <section className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="mb-10 flex items-end justify-between">
           <div>
-            <p className="label mb-2">✦ Fresh content</p>
+            <p className="label mb-2 flex items-center gap-1.5"><Zap className="w-3.5 h-3.5" /> Fresh content</p>
             <h2 className="heading-xl text-gray-900 dark:text-[#f0f6fc]">Latest Posts</h2>
           </div>
           <Link href="/blogs" className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline underline-offset-4">
@@ -152,15 +152,17 @@ export default async function HomePage() {
           </div>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              { icon: '✍️', title: 'Rich Text Editor', desc: 'A powerful editor with formatting, images, links, and code blocks built in.' },
-              { icon: '🔍', title: 'Built-in Discovery', desc: 'Your stories get surfaced to readers through categories, tags, and trending.' },
-              { icon: '✅', title: 'Quality Reviewed', desc: 'Every post is reviewed before publishing to maintain high content standards.' },
-              { icon: '📊', title: 'Author Analytics', desc: 'Track views, likes, and reader engagement on all your published posts.' },
-              { icon: '💬', title: 'Community Comments', desc: 'Engage with your readers through threaded comments and reactions.' },
-              { icon: '🔖', title: 'Save & Bookmark', desc: 'Readers can bookmark your articles to read later and come back for more.' },
-            ].map(({ icon, title, desc }) => (
+              { icon: PenSquare,    title: 'Rich Text Editor',    desc: 'A powerful editor with formatting, images, links, and code blocks built in.' },
+              { icon: Search,       title: 'Built-in Discovery',  desc: 'Your stories get surfaced to readers through categories, tags, and trending.' },
+              { icon: CheckCircle,  title: 'Quality Reviewed',    desc: 'Every post is reviewed before publishing to maintain high content standards.' },
+              { icon: BarChart2,    title: 'Author Analytics',    desc: 'Track views, likes, and reader engagement on all your published posts.' },
+              { icon: MessageSquare,title: 'Community Comments',  desc: 'Engage with your readers through threaded comments and reactions.' },
+              { icon: Bookmark,     title: 'Save & Bookmark',     desc: 'Readers can bookmark your articles to read later and come back for more.' },
+            ].map(({ icon: Icon, title, desc }) => (
               <div key={title} className="group rounded-2xl border border-gray-200 dark:border-[#21262d] bg-white dark:bg-[#161b22] p-6 transition-all hover:border-blue-200 dark:hover:border-blue-900/50 hover:shadow-lg hover:shadow-blue-500/5 hover:-translate-y-0.5">
-                <div className="mb-4 text-3xl">{icon}</div>
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-950/30">
+                  <Icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                </div>
                 <h3 className="mb-2 text-base font-semibold text-gray-900 dark:text-[#f0f6fc]">{title}</h3>
                 <p className="text-sm leading-relaxed text-gray-500 dark:text-[#8b949e]">{desc}</p>
               </div>

@@ -85,7 +85,7 @@ export default function BlogPostClient({ blog: initialBlog }) {
       {isPreview && (
         <div className="mb-6 flex items-center gap-3 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 px-4 py-3">
           <span className="text-yellow-600 dark:text-yellow-400 text-sm font-medium">
-            👁 Preview mode — this blog is <span className="font-bold capitalize">{blog.status}</span> and not yet public
+            Preview mode — this blog is <span className="font-bold capitalize">{blog.status}</span> and not yet public
           </span>
         </div>
       )}

@@ -36,8 +36,7 @@ export default function AdminLoginPage() {
       }
 
       // Store with admin-specific key so it doesn't conflict with user session
-      localStorage.setItem('admin_token', data.token);
-      localStorage.setItem('token', data.token);
+      sessionStorage.setItem('admin_token', data.token);
       api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
       updateUser(data.user);
 

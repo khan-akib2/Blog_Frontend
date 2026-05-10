@@ -9,6 +9,14 @@ import {
   Heading1, Heading2, Heading3, Undo, Redo, Strikethrough,
 } from 'lucide-react';
 
+// Define extensions outside component so they're not recreated on every render
+const buildExtensions = (placeholder) => [
+  StarterKit,
+  Image.configure({ inline: false, allowBase64: true }),
+  Link.configure({ openOnClick: false }),
+  Placeholder.configure({ placeholder }),
+];
+
 const ToolbarButton = ({ onClick, active, title, children }) => (
   <button
     type="button"
@@ -23,12 +31,7 @@ const ToolbarButton = ({ onClick, active, title, children }) => (
 export default function RichTextEditor({ content, onChange }) {
   const editor = useEditor({
     immediatelyRender: false,
-    extensions: [
-      StarterKit,
-      Image.configure({ inline: false, allowBase64: true }),
-      Link.configure({ openOnClick: false }),
-      Placeholder.configure({ placeholder: 'Start writing your amazing blog post...' }),
-    ],
+    extensions: buildExtensions('Start writing your amazing blog post...'),
     content,
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
     editorProps: {

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Clock, Eye, Heart } from 'lucide-react';
+import { Clock, Eye, Heart, PenSquare } from 'lucide-react';
 import { formatDate } from '@/utils/helpers';
 
 export default function BlogCard({ blog, compact = false }) {
@@ -20,7 +20,7 @@ export default function BlogCard({ blog, compact = false }) {
           ) : (
             <div className="flex h-full w-full items-center justify-center"
               style={{ background: 'linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%)' }}>
-              <span className="text-5xl opacity-60">✍️</span>
+              <PenSquare className="w-10 h-10 text-white/40" />
             </div>
           )}
           {/* Gradient overlay */}

@@ -2,6 +2,7 @@ import { Plus_Jakarta_Sans, Cormorant_Garamond, JetBrains_Mono } from 'next/font
 import './globals.css';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { AuthProvider } from '@/context/AuthContext';
+import GoogleAuthProvider from '@/components/GoogleAuthProvider';
 import { Toaster } from 'react-hot-toast';
 
 const jakarta = Plus_Jakarta_Sans({
@@ -34,19 +35,21 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
       <body className={`${jakarta.variable} ${cormorant.variable} ${jetbrainsMono.variable} antialiased`}>
         <ThemeProvider>
-          <AuthProvider>
-            {children}
-            <Toaster
-              position="top-right"
-              toastOptions={{
-                style: { borderRadius: '12px', fontSize: '14px' },
-                duration: 3000,
-              }}
-            />
-          </AuthProvider>
+          <GoogleAuthProvider>
+            <AuthProvider>
+              {children}
+              <Toaster
+                position="top-right"
+                toastOptions={{
+                  style: { borderRadius: '12px', fontSize: '14px' },
+                  duration: 3000,
+                }}
+              />
+            </AuthProvider>
+          </GoogleAuthProvider>
         </ThemeProvider>
       </body>
     </html>

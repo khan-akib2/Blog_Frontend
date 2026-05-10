@@ -4,14 +4,13 @@ import api from '@/services/api';
 
 const AuthContext = createContext(null);
 
-// Use separate storage keys so admin and user sessions don't conflict
+// sessionStorage is tab-isolated, so logging out in one tab won't affect others
 const USER_TOKEN_KEY = 'user_token';
 const ADMIN_TOKEN_KEY = 'admin_token';
 
 function getStoredToken() {
   if (typeof window === 'undefined') return null;
-  // Return whichever token exists (user takes priority on regular pages)
-  return localStorage.getItem(USER_TOKEN_KEY) || localStorage.getItem(ADMIN_TOKEN_KEY);
+  return sessionStorage.getItem(USER_TOKEN_KEY) || sessionStorage.getItem(ADMIN_TOKEN_KEY);
 }
 
 export function AuthProvider({ children }) {
@@ -25,8 +24,8 @@ export function AuthProvider({ children }) {
       api.get('/auth/me')
         .then(({ data }) => setUser(data.user))
         .catch(() => {
-          localStorage.removeItem(USER_TOKEN_KEY);
-          localStorage.removeItem(ADMIN_TOKEN_KEY);
+          sessionStorage.removeItem(USER_TOKEN_KEY);
+          sessionStorage.removeItem(ADMIN_TOKEN_KEY);
           delete api.defaults.headers.common['Authorization'];
         })
         .finally(() => setLoading(false));
@@ -37,11 +36,8 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     const { data } = await api.post('/auth/login', { email, password });
-    // Store in role-specific key
     const key = data.user.role === 'admin' ? ADMIN_TOKEN_KEY : USER_TOKEN_KEY;
-    localStorage.setItem(key, data.token);
-    // Keep legacy key for API interceptor compatibility
-    localStorage.setItem('token', data.token);
+    sessionStorage.setItem(key, data.token);
     api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
     setUser(data.user);
     return data.user;
@@ -49,17 +45,22 @@ export function AuthProvider({ children }) {
 
   const register = async (name, email, password) => {
     const { data } = await api.post('/auth/register', { name, email, password });
-    localStorage.setItem(USER_TOKEN_KEY, data.token);
-    localStorage.setItem('token', data.token);
+    // Registration no longer returns a token — email verification required
+    return data;
+  };
+
+  const googleLogin = async (credential) => {
+    const { data } = await api.post('/auth/google', { credential });
+    const key = data.user.role === 'admin' ? ADMIN_TOKEN_KEY : USER_TOKEN_KEY;
+    sessionStorage.setItem(key, data.token);
     api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
     setUser(data.user);
     return data.user;
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem(USER_TOKEN_KEY);
-    localStorage.removeItem(ADMIN_TOKEN_KEY);
+    sessionStorage.removeItem(USER_TOKEN_KEY);
+    sessionStorage.removeItem(ADMIN_TOKEN_KEY);
     delete api.defaults.headers.common['Authorization'];
     setUser(null);
   };
@@ -67,7 +68,7 @@ export function AuthProvider({ children }) {
   const updateUser = (updatedUser) => setUser(updatedUser);
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, updateUser }}>
+    <AuthContext.Provider value={{ user, loading, login, register, googleLogin, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );
