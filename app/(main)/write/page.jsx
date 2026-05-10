@@ -6,7 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import dynamic from 'next/dynamic';
 import api from '@/services/api';
 import toast from 'react-hot-toast';
-import { Save, Send, Upload, X, Loader2 } from 'lucide-react';
+import { Save, Send, Upload, X, Loader2, PenSquare, Tag, Image as ImageIcon, Zap } from 'lucide-react';
 import { CATEGORIES } from '@/utils/helpers';
 
 const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ssr: false });
@@ -29,7 +29,7 @@ function WriteContent() {
 
   useEffect(() => {
     if (editId) {
-      api.get(`/blogs/my`).then(({ data }) => {
+      api.get('/blogs/my').then(({ data }) => {
         const blog = data.blogs.find((b) => b._id === editId);
         if (blog) {
           setForm({ title: blog.title, content: blog.content || '', category: blog.category, tags: blog.tags?.join(', ') || '' });
@@ -90,17 +90,34 @@ function WriteContent() {
     }
   };
 
-  if (authLoading) return <div className="flex items-center justify-center min-h-screen"><Loader2 className="w-8 h-8 animate-spin text-indigo-600" /></div>;
+  if (authLoading) return (
+    <div className="flex items-center justify-center min-h-screen">
+      <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+    </div>
+  );
 
-  return (    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  return (
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+      {/* Header */}
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{editId ? 'Edit Blog' : 'Write a Blog'}</h1>
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.12em] text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1.5">
+            <Zap className="w-3.5 h-3.5" /> {editId ? 'Edit Article' : 'New Article'}
+          </p>
+          <h1 className="text-2xl font-black text-gray-900 dark:text-white" style={{ fontFamily: 'var(--font-sans)', letterSpacing: '-0.02em' }}>
+            {editId ? 'Edit Blog Post' : 'Write a Blog Post'}
+          </h1>
+        </div>
         <div className="flex items-center gap-3">
-          <button onClick={handleSaveDraft} disabled={saving} className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50 text-sm font-medium">
+          <button onClick={handleSaveDraft} disabled={saving}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-[#1a2744] bg-white dark:bg-[#0d1526] text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#111d35] transition-all disabled:opacity-50 text-sm font-semibold">
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
             Save Draft
           </button>
-          <button onClick={handleSubmit} disabled={submitting} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition-colors disabled:opacity-50 text-sm font-medium">
+          <button onClick={handleSubmit} disabled={submitting}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-50"
+            style={{ background: 'linear-gradient(135deg, #2563eb, #7c3aed)', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>
             {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             Submit for Review
           </button>
@@ -109,64 +126,101 @@ function WriteContent() {
 
       <div className="space-y-6">
         {/* Title */}
-        <div>
+        <div className="rounded-2xl border border-gray-100 dark:border-[#1a2744] bg-white dark:bg-[#0d1526] p-6">
+          <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.1em] text-gray-500 dark:text-gray-400 mb-3">
+            <PenSquare className="w-3.5 h-3.5" /> Article Title *
+          </label>
           <input
             type="text"
             value={form.title}
             onChange={(e) => setForm({ ...form, title: e.target.value })}
-            placeholder="Your blog title..."
-            className="w-full px-4 py-3 text-2xl font-bold border-0 border-b-2 border-gray-200 dark:border-gray-700 bg-transparent text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-600 focus:outline-none focus:border-indigo-500 transition-colors"
+            placeholder="Write a compelling title..."
+            className="w-full text-2xl font-black bg-transparent text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-600 focus:outline-none border-0 border-b-2 border-gray-100 dark:border-[#1a2744] pb-3 focus:border-blue-500 dark:focus:border-blue-500/50 transition-colors"
+            style={{ fontFamily: 'var(--font-serif)', letterSpacing: '-0.02em' }}
           />
         </div>
 
         {/* Thumbnail */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Thumbnail Image</label>
+        <div className="rounded-2xl border border-gray-100 dark:border-[#1a2744] bg-white dark:bg-[#0d1526] p-6">
+          <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.1em] text-gray-500 dark:text-gray-400 mb-3">
+            <ImageIcon className="w-3.5 h-3.5" /> Cover Image
+          </label>
           {thumbnailPreview ? (
-            <div className="relative rounded-xl overflow-hidden h-48">
+            <div className="relative rounded-xl overflow-hidden h-52">
               <img src={thumbnailPreview} alt="Thumbnail" className="w-full h-full object-cover" />
-              <button onClick={() => { setThumbnail(null); setThumbnailPreview(''); }} className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+              <button onClick={() => { setThumbnail(null); setThumbnailPreview(''); }}
+                className="absolute top-3 right-3 p-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors shadow-lg">
                 <X className="w-4 h-4" />
               </button>
             </div>
           ) : (
-            <label className="flex flex-col items-center justify-center h-40 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl cursor-pointer hover:border-indigo-400 dark:hover:border-indigo-600 transition-colors bg-gray-50 dark:bg-gray-900">
-              <Upload className="w-8 h-8 text-gray-400 mb-2" />
-              <span className="text-sm text-gray-500 dark:text-gray-400">Click to upload thumbnail (max 5MB)</span>
+            <label className="flex flex-col items-center justify-center h-44 border-2 border-dashed border-gray-200 dark:border-[#1a2744] rounded-xl cursor-pointer hover:border-blue-400 dark:hover:border-blue-600 transition-colors bg-gray-50 dark:bg-[#060b18] group">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl mb-3 transition-transform group-hover:scale-110"
+                style={{ background: 'linear-gradient(135deg, rgba(37,99,235,0.1), rgba(124,58,237,0.1))' }}>
+                <Upload className="w-5 h-5 text-blue-500" />
+              </div>
+              <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">Click to upload cover image</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500 mt-1">PNG, JPG up to 5MB</span>
               <input type="file" accept="image/*" onChange={handleThumbnail} className="hidden" />
             </label>
           )}
         </div>
 
         {/* Category & Tags */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Category *</label>
-            <select
-              value={form.category}
-              onChange={(e) => setForm({ ...form, category: e.target.value })}
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-              <option value="">Select category</option>
-              {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Tags (comma separated)</label>
-            <input
-              type="text"
-              value={form.tags}
-              onChange={(e) => setForm({ ...form, tags: e.target.value })}
-              placeholder="react, javascript, web"
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
+        <div className="rounded-2xl border border-gray-100 dark:border-[#1a2744] bg-white dark:bg-[#0d1526] p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.1em] text-gray-500 dark:text-gray-400 mb-2">
+                Category *
+              </label>
+              <select
+                value={form.category}
+                onChange={(e) => setForm({ ...form, category: e.target.value })}
+                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-[#1a2744] bg-gray-50 dark:bg-[#060b18] text-gray-900 dark:text-white text-sm focus:outline-none focus:border-blue-500 dark:focus:border-blue-500/50 transition-colors"
+              >
+                <option value="">Select a category</option>
+                {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.1em] text-gray-500 dark:text-gray-400 mb-2">
+                <Tag className="w-3.5 h-3.5" /> Tags
+              </label>
+              <input
+                type="text"
+                value={form.tags}
+                onChange={(e) => setForm({ ...form, tags: e.target.value })}
+                placeholder="react, javascript, web (comma separated)"
+                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-[#1a2744] bg-gray-50 dark:bg-[#060b18] text-gray-900 dark:text-white placeholder-gray-400 text-sm focus:outline-none focus:border-blue-500 dark:focus:border-blue-500/50 transition-colors"
+              />
+            </div>
           </div>
         </div>
 
         {/* Editor */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Content *</label>
+        <div className="rounded-2xl border border-gray-100 dark:border-[#1a2744] bg-white dark:bg-[#0d1526] overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-100 dark:border-[#1a2744]">
+            <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.1em] text-gray-500 dark:text-gray-400">
+              <PenSquare className="w-3.5 h-3.5" /> Content *
+            </label>
+          </div>
           <RichTextEditor content={form.content} onChange={(html) => setForm({ ...form, content: html })} />
+        </div>
+
+        {/* Bottom actions */}
+        <div className="flex items-center justify-end gap-3 pt-2">
+          <button onClick={handleSaveDraft} disabled={saving}
+            className="flex items-center gap-2 px-6 py-3 rounded-xl border border-gray-200 dark:border-[#1a2744] bg-white dark:bg-[#0d1526] text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#111d35] transition-all disabled:opacity-50 text-sm font-semibold">
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            Save as Draft
+          </button>
+          <button onClick={handleSubmit} disabled={submitting}
+            className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-50"
+            style={{ background: 'linear-gradient(135deg, #2563eb, #7c3aed)', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>
+            {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+            Submit for Review
+          </button>
         </div>
       </div>
     </div>
@@ -175,7 +229,11 @@ function WriteContent() {
 
 export default function WritePage() {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><Loader2 className="w-8 h-8 animate-spin text-indigo-600" /></div>}>
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    }>
       <WriteContent />
     </Suspense>
   );

@@ -27,10 +27,10 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata = {
-  title: { default: 'BlogHub — Where Ideas Come Alive', template: '%s | BlogHub' },
-  description: 'Discover insightful articles, share your expertise, and connect with a community of passionate writers.',
-  keywords: ['blog', 'writing', 'stories', 'articles'],
-  openGraph: { type: 'website', siteName: 'BlogHub' },
+  title: { default: 'BlogHub — Where Great Ideas Come to Life', template: '%s | BlogHub' },
+  description: 'A next-generation publishing platform. Discover insightful articles from expert writers, share your knowledge, and join a community that values great writing.',
+  keywords: ['blog', 'writing', 'stories', 'articles', 'technology', 'knowledge', 'NIT'],
+  openGraph: { type: 'website', siteName: 'BlogHub by NIT' },
 };
 
 export default function RootLayout({ children }) {

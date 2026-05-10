@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import api from '@/services/api';
 import toast from 'react-hot-toast';
-import { Camera, Loader2, Save } from 'lucide-react';
+import { Camera, Loader2, Save, User, Mail, FileText, Zap } from 'lucide-react';
 
 export default function ProfilePage() {
   const { user, loading: authLoading, updateUser } = useAuth();
@@ -50,68 +50,114 @@ export default function ProfilePage() {
     }
   };
 
-  if (authLoading) return <div className="flex items-center justify-center min-h-screen"><Loader2 className="w-8 h-8 animate-spin text-indigo-600" /></div>;
+  if (authLoading) return (
+    <div className="flex items-center justify-center min-h-screen">
+      <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+    </div>
+  );
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">Edit Profile</h1>
 
-      <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-8">
-        {/* Avatar */}
-        <div className="flex flex-col items-center mb-8">
-          <div className="relative">
-            {user?.avatar ? (
-              <img src={user.avatar} alt={user.name} className="w-24 h-24 rounded-full object-cover" />
-            ) : (
-              <div className="w-24 h-24 rounded-full bg-indigo-600 flex items-center justify-center text-white text-3xl font-bold">
-                {user?.name?.charAt(0).toUpperCase()}
-              </div>
-            )}
-            <label className="absolute bottom-0 right-0 p-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full cursor-pointer transition-colors">
-              {uploadingAvatar ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
-              <input type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" disabled={uploadingAvatar} />
-            </label>
+      {/* Header */}
+      <div className="mb-8">
+        <p className="text-xs font-bold uppercase tracking-[0.12em] text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1.5">
+          <Zap className="w-3.5 h-3.5" /> Account Settings
+        </p>
+        <h1 className="text-2xl font-black text-gray-900 dark:text-white" style={{ fontFamily: 'var(--font-sans)', letterSpacing: '-0.02em' }}>
+          Edit Profile
+        </h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Update your personal information and bio</p>
+      </div>
+
+      <div className="rounded-3xl border border-gray-100 dark:border-[#1a2744] bg-white dark:bg-[#0d1526] overflow-hidden shadow-sm">
+
+        {/* Avatar section */}
+        <div className="px-8 py-8 border-b border-gray-100 dark:border-[#1a2744]"
+          style={{ background: 'linear-gradient(135deg, rgba(37,99,235,0.03), rgba(124,58,237,0.03))' }}>
+          <div className="flex flex-col sm:flex-row items-center gap-6">
+            <div className="relative flex-shrink-0">
+              {user?.avatar ? (
+                <img src={user.avatar} alt={user.name} className="w-24 h-24 rounded-2xl object-cover ring-4 ring-white dark:ring-[#0d1526] shadow-xl" />
+              ) : (
+                <div className="w-24 h-24 rounded-2xl flex items-center justify-center text-white text-3xl font-black shadow-xl"
+                  style={{ background: 'linear-gradient(135deg, #2563eb, #7c3aed)' }}>
+                  {user?.name?.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <label className="absolute -bottom-2 -right-2 p-2 rounded-xl cursor-pointer transition-all hover:-translate-y-0.5 shadow-lg"
+                style={{ background: 'linear-gradient(135deg, #2563eb, #7c3aed)' }}>
+                {uploadingAvatar
+                  ? <Loader2 className="w-4 h-4 text-white animate-spin" />
+                  : <Camera className="w-4 h-4 text-white" />}
+                <input type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" disabled={uploadingAvatar} />
+              </label>
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white">{user?.name}</h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{user?.email}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">Click the camera icon to update your photo</p>
+            </div>
           </div>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Click the camera to change avatar</p>
         </div>
 
-        <form onSubmit={handleSave} className="space-y-5">
+        {/* Form */}
+        <form onSubmit={handleSave} className="p-8 space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Full Name</label>
+            <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.1em] text-gray-500 dark:text-gray-400 mb-2">
+              <User className="w-3.5 h-3.5" /> Full Name
+            </label>
             <input
               type="text"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-[#1a2744] bg-gray-50 dark:bg-[#060b18] text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 dark:focus:border-blue-500/50 transition-colors text-sm font-medium"
             />
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Email</label>
+            <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.1em] text-gray-500 dark:text-gray-400 mb-2">
+              <Mail className="w-3.5 h-3.5" /> Email Address
+            </label>
             <input
               type="email"
               value={user?.email || ''}
               disabled
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 text-gray-500 dark:text-gray-500 cursor-not-allowed"
+              className="w-full px-4 py-3 rounded-xl border border-gray-100 dark:border-[#1a2744] bg-gray-100 dark:bg-[#111d35] text-gray-400 dark:text-gray-500 cursor-not-allowed text-sm"
             />
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1.5">Email cannot be changed</p>
           </div>
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Bio</label>
+            <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.1em] text-gray-500 dark:text-gray-400 mb-2">
+              <FileText className="w-3.5 h-3.5" /> Bio
+            </label>
             <textarea
               value={form.bio}
               onChange={(e) => setForm({ ...form, bio: e.target.value })}
-              rows={3}
+              rows={4}
               maxLength={200}
-              placeholder="Tell readers about yourself..."
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+              placeholder="Tell readers about yourself, your expertise, and what you write about..."
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-[#1a2744] bg-gray-50 dark:bg-[#060b18] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:border-blue-500 dark:focus:border-blue-500/50 transition-colors resize-none text-sm"
             />
-            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 text-right">{form.bio.length}/200</p>
+            <div className="flex items-center justify-between mt-1.5">
+              <p className="text-xs text-gray-400 dark:text-gray-500">A good bio helps readers connect with you</p>
+              <p className="text-xs font-semibold text-gray-400 dark:text-gray-500">{form.bio.length}/200</p>
+            </div>
           </div>
+
           <button
             type="submit"
             disabled={saving}
-            className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
+            className="w-full py-3.5 rounded-xl text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            style={{
+              background: 'linear-gradient(135deg, #2563eb, #7c3aed)',
+              boxShadow: '0 4px 20px rgba(37,99,235,0.25)'
+            }}
           >
-            {saving ? <><Loader2 className="w-5 h-5 animate-spin" /> Saving...</> : <><Save className="w-5 h-5" /> Save Changes</>}
+            {saving
+              ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving changes...</>
+              : <><Save className="w-4 h-4" /> Save Changes</>}
           </button>
         </form>
       </div>
