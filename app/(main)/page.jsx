@@ -296,7 +296,7 @@ export default async function HomePage() {
             style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', color: '#93c5fd' }}>
             <Rocket className="h-4 w-4" /> Free forever for writers
           </div>
-          <h2 className="mb-5 text-white" style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', fontWeight: 700, lineHeight: 1.1, letterSpacing: '-0.02em' }}>
+          <h2 className="mb-5 text-white" style={{ fontFamily: 'var(--font-sans)', fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', fontWeight: 700, lineHeight: 1.1, letterSpacing: '-0.02em' }}>
             Your story deserves<br />to be heard
           </h2>
           <p className="mb-10 text-base leading-relaxed max-w-xl mx-auto" style={{ color: '#93c5fd' }}>

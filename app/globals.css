@@ -81,7 +81,7 @@ body {
 
 /* ── Typography Scale ── */
 .display-xl {
-  font-family: var(--font-serif), Georgia, serif;
+  font-family: var(--font-sans), sans-serif;
   font-size: clamp(3rem, 8vw, 6rem);
   font-weight: 700;
   line-height: 1.02;
@@ -89,7 +89,7 @@ body {
 }
 
 .display-lg {
-  font-family: var(--font-serif), Georgia, serif;
+  font-family: var(--font-sans), sans-serif;
   font-size: clamp(2.2rem, 5vw, 4rem);
   font-weight: 700;
   line-height: 1.08;
@@ -226,8 +226,8 @@ body {
   height: 0;
   pointer-events: none;
 }
-.ProseMirror h1 { font-family: var(--font-serif), serif; font-size: 2rem; font-weight: 700; margin: 1.5rem 0 0.75rem; letter-spacing: -0.02em; }
-.ProseMirror h2 { font-family: var(--font-serif), serif; font-size: 1.5rem; font-weight: 600; margin: 1.25rem 0 0.5rem; }
+.ProseMirror h1 { font-family: var(--font-sans), sans-serif; font-size: 2rem; font-weight: 700; margin: 1.5rem 0 0.75rem; letter-spacing: -0.02em; }
+.ProseMirror h2 { font-family: var(--font-sans), sans-serif; font-size: 1.5rem; font-weight: 600; margin: 1.25rem 0 0.5rem; }
 .ProseMirror h3 { font-size: 1.25rem; font-weight: 600; margin: 1rem 0 0.5rem; }
 .ProseMirror p  { margin: 0.75rem 0; line-height: 1.75; }
 .ProseMirror ul, .ProseMirror ol { padding-left: 1.5rem; margin: 0.75rem 0; }
@@ -243,8 +243,8 @@ body {
 
 /* ── Blog Content ── */
 .blog-content { font-size: 1.0625rem; line-height: 1.8; }
-.blog-content h1 { font-family: var(--font-serif), serif; font-size: 2rem; font-weight: 700; margin: 2rem 0 1rem; letter-spacing: -0.02em; }
-.blog-content h2 { font-family: var(--font-serif), serif; font-size: 1.5rem; font-weight: 600; margin: 1.75rem 0 0.75rem; }
+.blog-content h1 { font-family: var(--font-sans), sans-serif; font-size: 2rem; font-weight: 700; margin: 2rem 0 1rem; letter-spacing: -0.02em; }
+.blog-content h2 { font-family: var(--font-sans), sans-serif; font-size: 1.5rem; font-weight: 600; margin: 1.75rem 0 0.75rem; }
 .blog-content h3 { font-size: 1.25rem; font-weight: 600; margin: 1.5rem 0 0.5rem; }
 .blog-content p  { margin: 1rem 0; }
 .blog-content ul, .blog-content ol { padding-left: 1.5rem; margin: 1rem 0; }
