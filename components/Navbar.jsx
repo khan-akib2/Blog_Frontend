@@ -47,14 +47,14 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
           <div className="relative flex h-9 w-9 items-center justify-center rounded-xl overflow-hidden"
-            style={{ background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)' }}>
+            style={{ background: '#2563eb' }}>
             <Zap className="h-4.5 w-4.5 text-white" fill="white" />
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              style={{ background: 'linear-gradient(135deg, #1d4ed8 0%, #6d28d9 100%)' }} />
+              style={{ background: '#1d4ed8' }} />
           </div>
           <div className="flex flex-col leading-none">
             <span className="text-[15px] font-black tracking-tight text-gray-900 dark:text-white" style={{ fontFamily: 'var(--font-sans)' }}>
-              Blog<span style={{ background: 'linear-gradient(135deg, #2563eb, #7c3aed)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Hub</span>
+              Blog<span className="text-blue-600 dark:text-blue-400">Hub</span>
             </span>
             <span className="text-[9px] font-semibold tracking-[0.15em] uppercase text-gray-400 dark:text-gray-500">by NIT</span>
           </div>
@@ -99,8 +99,8 @@ export default function Navbar() {
             <>
               <Link
                 href="/write"
-                className="hidden md:inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-md shadow-blue-600/25 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-blue-600/40"
-                style={{ background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)' }}
+                className="hidden md:inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5"
+                style={{ background: '#2563eb' }}
               >
                 <PenSquare className="h-3.5 w-3.5" /> Write
               </Link>
@@ -114,7 +114,7 @@ export default function Navbar() {
                     <img src={user.avatar} alt={user.name} className="h-8 w-8 rounded-full object-cover ring-2 ring-blue-500/30" />
                   ) : (
                     <div className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-white shadow-sm"
-                      style={{ background: 'linear-gradient(135deg, #2563eb, #7c3aed)' }}>
+                      style={{ background: '#2563eb' }}>
                       {user.name?.charAt(0).toUpperCase()}
                     </div>
                   )}
@@ -131,7 +131,7 @@ export default function Navbar() {
                           <img src={user.avatar} alt={user.name} className="h-10 w-10 rounded-full object-cover ring-2 ring-blue-500/20" />
                         ) : (
                           <div className="flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold text-white"
-                            style={{ background: 'linear-gradient(135deg, #2563eb, #7c3aed)' }}>
+                            style={{ background: '#2563eb' }}>
                             {user.name?.charAt(0).toUpperCase()}
                           </div>
                         )}
@@ -176,8 +176,8 @@ export default function Navbar() {
                 Sign in
               </Link>
               <Link href="/register"
-                className="rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-md shadow-blue-600/25 transition-all duration-200 hover:-translate-y-0.5"
-                style={{ background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)' }}>
+                className="rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5"
+                style={{ background: '#2563eb' }}>
                 Get started
               </Link>
             </div>
@@ -208,7 +208,7 @@ export default function Navbar() {
             {user ? (
               <>
                 <Link href="/write" className="rounded-xl px-4 py-3 text-sm font-semibold text-white text-center"
-                  style={{ background: 'linear-gradient(135deg, #2563eb, #7c3aed)' }}>
+                  style={{ background: '#2563eb' }}>
                   ✍️ Write a Blog
                 </Link>
                 <Link href="/dashboard" className="rounded-xl px-4 py-3 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#111d35]">Dashboard</Link>
@@ -223,7 +223,7 @@ export default function Navbar() {
               <>
                 <Link href="/login" className="rounded-xl px-4 py-3 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#111d35]">Sign in</Link>
                 <Link href="/register" className="rounded-xl px-4 py-3 text-center text-sm font-semibold text-white"
-                  style={{ background: 'linear-gradient(135deg, #2563eb, #7c3aed)' }}>
+                  style={{ background: '#2563eb' }}>
                   Get started free
                 </Link>
               </>

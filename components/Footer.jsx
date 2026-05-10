@@ -24,7 +24,7 @@ export default function Footer() {
   return (
     <footer className="relative w-full overflow-hidden bg-[#060b18] text-gray-300">
       {/* Top gradient line */}
-      <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, transparent, #2563eb, #7c3aed, transparent)' }} />
+      <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, transparent, #2563eb, transparent)' }} />
 
       {/* Grid background */}
       <div className="absolute inset-0 pointer-events-none opacity-30"
@@ -48,12 +48,12 @@ export default function Footer() {
           <div className="md:col-span-4">
             <Link href="/" className="inline-flex items-center gap-3 mb-5 group">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl"
-                style={{ background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)' }}>
+                style={{ background: '#2563eb' }}>
                 <Zap className="h-5 w-5 text-white" fill="white" />
               </div>
               <div className="flex flex-col leading-none">
                 <span className="text-lg font-black text-white tracking-tight">
-                  Blog<span style={{ background: 'linear-gradient(135deg, #60a5fa, #a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Hub</span>
+                  Blog<span className="text-blue-400">Hub</span>
                 </span>
                 <span className="text-[9px] font-semibold tracking-[0.15em] uppercase text-gray-500">by NIT</span>
               </div>
@@ -150,10 +150,10 @@ export default function Footer() {
 
         {/* Newsletter strip */}
         <div className="rounded-2xl border border-[#1a2744] p-6 mb-10 relative overflow-hidden"
-          style={{ background: 'linear-gradient(135deg, rgba(37,99,235,0.1), rgba(124,58,237,0.1))' }}>
+          style={{ background: 'rgba(37,99,235,0.06)' }}>
           {/* Glow */}
           <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full pointer-events-none"
-            style={{ background: 'radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%)' }} />
+            style={{ background: 'radial-gradient(circle, rgba(37,99,235,0.1) 0%, transparent 70%)' }} />
           <div className="relative flex flex-col sm:flex-row items-center justify-between gap-5">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl flex-shrink-0"
@@ -190,7 +190,7 @@ export default function Footer() {
                   type="submit"
                   disabled={subscribing}
                   className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-60 flex-shrink-0"
-                  style={{ background: 'linear-gradient(135deg, #2563eb, #7c3aed)', boxShadow: '0 4px 16px rgba(37,99,235,0.25)' }}
+                  style={{ background: '#2563eb' }}
                   suppressHydrationWarning
                 >
                   {subscribing ? '...' : 'Subscribe'}

@@ -27,7 +27,7 @@ export default function BlogCard({ blog, compact = false }) {
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           {/* Category pill */}
           <span className="absolute left-3 top-3 rounded-full px-3 py-1 text-xs font-bold text-white shadow-sm backdrop-blur-sm"
-            style={{ background: 'linear-gradient(135deg, rgba(37,99,235,0.9), rgba(124,58,237,0.9))' }}>
+            style={{ background: 'rgba(37,99,235,0.9)' }}>
             {blog.category}
           </span>
           {/* Read arrow on hover */}
@@ -47,7 +47,7 @@ export default function BlogCard({ blog, compact = false }) {
             <img src={blog.author.avatar} alt={blog.author.name} className="h-7 w-7 rounded-full object-cover ring-2 ring-gray-100 dark:ring-[#1a2744]" />
           ) : (
             <div className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold text-white ring-2 ring-gray-100 dark:ring-[#1a2744]"
-              style={{ background: 'linear-gradient(135deg, #2563eb, #7c3aed)' }}>
+              style={{ background: '#2563eb' }}>
               {blog.author?.name?.charAt(0).toUpperCase()}
             </div>
           )}

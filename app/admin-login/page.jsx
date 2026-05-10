@@ -5,7 +5,9 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import api from '@/services/api';
 import toast from 'react-hot-toast';
-import { Eye, EyeOff, Shield, Loader2, ArrowLeft, Lock, Zap, Code2, Database, Globe } from 'lucide-react';
+import { Eye, EyeOff, Shield, Loader2, ArrowLeft, Lock, Mail } from 'lucide-react';
+
+const inputCls = "w-full border-b bg-transparent py-3 pr-8 text-sm placeholder-gray-400 focus:outline-none transition-colors border-gray-300 dark:border-gray-700 focus:border-blue-500 text-gray-900 dark:text-white dark:placeholder-gray-600";
 
 export default function AdminLoginPage() {
   const { user, loading, updateUser } = useAuth();
@@ -48,167 +50,158 @@ export default function AdminLoginPage() {
   };
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: '#060b18' }}>
+    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-[#0a0a0f]">
       <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
     </div>
   );
 
-  return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden"
-      style={{ background: 'linear-gradient(135deg, #060b18 0%, #0d1a3a 50%, #1a0a3a 100%)' }}>
+  const FormContent = (
+    <>
+      <Link href="/" className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
+        <ArrowLeft className="w-4 h-4" /> Back to site
+      </Link>
 
-      {/* Tech grid */}
-      <div className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage: 'linear-gradient(rgba(79,142,247,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(79,142,247,0.05) 1px, transparent 1px)',
-          backgroundSize: '60px 60px'
-        }} />
+      <h1 className="mb-1 text-5xl font-bold text-gray-900 dark:text-white" style={{ fontFamily: 'var(--font-sans)', letterSpacing: '-0.02em' }}>
+        Admin Login
+      </h1>
+      <p className="mb-10 text-sm text-gray-500">Restricted access — authorized personnel only</p>
 
-      {/* Glow orbs */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full blur-3xl opacity-20"
-          style={{ background: 'radial-gradient(ellipse, #2563eb, transparent)' }} />
-        <div className="absolute -bottom-40 right-1/4 w-[400px] h-[400px] rounded-full blur-3xl opacity-15"
-          style={{ background: 'radial-gradient(circle, #7c3aed, transparent)' }} />
+      {/* Warning */}
+      <div className="mb-8 flex items-start gap-3 px-4 py-3 rounded-xl"
+        style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.18)' }}>
+        <Lock className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+        <p className="text-xs text-amber-600 dark:text-amber-400 leading-relaxed">
+          This portal is for administrators only. Regular users should use the{' '}
+          <Link href="/login" className="underline font-semibold hover:text-amber-500">user login</Link> instead.
+        </p>
       </div>
 
-      {/* Floating tech icons */}
-      <div className="absolute top-20 left-10 opacity-10 animate-float hidden lg:block">
-        <Code2 className="w-8 h-8 text-blue-400" />
-      </div>
-      <div className="absolute top-40 right-16 opacity-10 hidden lg:block" style={{ animation: 'float 5s ease-in-out infinite 1s' }}>
-        <Database className="w-6 h-6 text-purple-400" />
-      </div>
-      <div className="absolute bottom-32 left-20 opacity-10 hidden lg:block" style={{ animation: 'float 6s ease-in-out infinite 2s' }}>
-        <Globe className="w-7 h-7 text-blue-300" />
+      <form onSubmit={handleSubmit} className="space-y-8">
+        <div className="relative">
+          <input
+            type="email"
+            required
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            placeholder="Email address"
+            className={inputCls}
+          />
+          <Mail className="absolute right-0 top-3 h-4 w-4 text-gray-400" />
+        </div>
+
+        <div className="relative">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            required
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            placeholder="Password"
+            className={inputCls}
+          />
+          <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-0 top-3">
+            {showPassword ? <EyeOff className="h-4 w-4 text-gray-400" /> : <Lock className="h-4 w-4 text-gray-400" />}
+          </button>
+        </div>
+
+        <button
+          type="submit"
+          disabled={submitting}
+          className="w-full rounded-full py-3.5 text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
+          style={{ background: 'linear-gradient(135deg,#3b82f6,#1d4ed8)', boxShadow: '0 4px 20px rgba(59,130,246,0.5)' }}
+        >
+          {submitting
+            ? <><Loader2 className="w-4 h-4 animate-spin" /> Authenticating...</>
+            : <><Shield className="w-4 h-4" /> Sign In to Admin Panel</>
+          }
+        </button>
+      </form>
+
+      <div className="mt-8 flex items-center justify-center gap-4 text-xs text-gray-400">
+        <div className="flex items-center gap-1.5">
+          <div className="w-2 h-2 rounded-full bg-green-500" />
+          Secure connection
+        </div>
+        <div className="w-px h-3 bg-gray-200 dark:bg-gray-700" />
+        <span>JWT Protected</span>
       </div>
 
-      <div className="relative w-full max-w-md">
-        {/* Back link */}
-        <Link href="/" className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-gray-400 hover:text-white transition-colors">
-          <ArrowLeft className="w-4 h-4" /> Back to site
+      <p className="text-center text-xs text-gray-400 mt-4">
+        Not an admin?{' '}
+        <Link href="/login" className="text-blue-500 hover:text-blue-400 font-semibold transition-colors">
+          User login →
         </Link>
+      </p>
+    </>
+  );
 
-        {/* Card */}
-        <div className="rounded-3xl border p-8 shadow-2xl"
-          style={{
-            background: 'rgba(13, 21, 38, 0.9)',
-            border: '1px solid rgba(26, 39, 68, 0.8)',
-            backdropFilter: 'blur(20px)',
-            boxShadow: '0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(79,142,247,0.05)'
-          }}>
+  return (
+    <div className="relative flex min-h-screen w-full overflow-hidden bg-white dark:bg-[#0a0a0f]">
 
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-5 relative"
-              style={{ background: 'linear-gradient(135deg, rgba(37,99,235,0.2), rgba(124,58,237,0.2))', border: '1px solid rgba(79,142,247,0.2)' }}>
-              <Shield className="w-9 h-9 text-blue-400" />
-              <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-green-500 border-2 border-[#0d1526] flex items-center justify-center">
+      {/* ── DESKTOP split layout ── */}
+      <div className="hidden md:flex w-full min-h-screen">
+
+        {/* Left — form */}
+        <div className="flex items-center justify-center w-[55%] px-16 py-20">
+          <div className="w-full max-w-md">{FormContent}</div>
+        </div>
+
+        {/* Right — blue panel */}
+        <div className="relative w-[45%] overflow-hidden"
+          style={{ background: 'linear-gradient(160deg,#1e3a8a 0%,#1d4ed8 45%,#3b82f6 100%)' }}>
+
+          {/* Diagonal clip on the left edge */}
+          <div className="absolute inset-y-0 left-0 bg-white dark:bg-[#0a0a0f]"
+            style={{ width: 'calc(16% + 2px)', clipPath: 'polygon(0 0,100% 0,0 100%)' }} />
+
+          {/* Grid */}
+          <div className="absolute inset-0 pointer-events-none opacity-10"
+            style={{
+              backgroundImage: 'linear-gradient(rgba(255,255,255,0.2) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.2) 1px,transparent 1px)',
+              backgroundSize: '40px 40px'
+            }} />
+
+          {/* Content */}
+          <div className="relative z-10 flex h-full flex-col items-center justify-center px-16 text-center">
+            {/* Shield icon */}
+            <div className="mb-8 flex items-center justify-center w-20 h-20 rounded-2xl"
+              style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.2)' }}>
+              <Shield className="w-10 h-10 text-white" />
+              <div className="absolute translate-x-5 -translate-y-5 w-4 h-4 rounded-full bg-green-400 border-2 border-blue-600 flex items-center justify-center">
                 <div className="w-1.5 h-1.5 rounded-full bg-white" />
               </div>
             </div>
-            <h1 className="text-2xl font-black text-white mb-1" style={{ fontFamily: 'var(--font-sans)', letterSpacing: '-0.02em' }}>
-              Admin Portal
-            </h1>
-            <p className="text-sm text-gray-400">Restricted access — authorized personnel only</p>
-          </div>
 
-          {/* Warning banner */}
-          <div className="mb-6 flex items-start gap-3 px-4 py-3 rounded-xl"
-            style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)' }}>
-            <Lock className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
-            <p className="text-xs text-amber-300 leading-relaxed">
-              This portal is for administrators only. Regular users should use the{' '}
-              <Link href="/login" className="underline hover:text-amber-200 font-semibold">user login</Link> instead.
+            <h2 className="text-5xl font-extrabold uppercase leading-tight tracking-wide text-white mb-4">
+              ADMIN<br />PORTAL
+            </h2>
+            <p className="text-blue-200 text-sm leading-relaxed max-w-xs">
+              Manage content, review submissions, and keep BlogHub running at its best.
             </p>
-          </div>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-[0.1em] text-gray-400 mb-2">
-                Email Address
-              </label>
-              <input
-                type="email"
-                required
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none transition-all"
-                style={{
-                  background: 'rgba(6, 11, 24, 0.8)',
-                  border: '1px solid rgba(26, 39, 68, 0.8)',
-                }}
-                onFocus={(e) => e.target.style.borderColor = 'rgba(79,142,247,0.5)'}
-                onBlur={(e) => e.target.style.borderColor = 'rgba(26, 39, 68, 0.8)'}
-                placeholder="admin@company.com"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-[0.1em] text-gray-400 mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  required
-                  value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  className="w-full px-4 py-3 pr-12 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none transition-all"
-                  style={{
-                    background: 'rgba(6, 11, 24, 0.8)',
-                    border: '1px solid rgba(26, 39, 68, 0.8)',
-                  }}
-                  onFocus={(e) => e.target.style.borderColor = 'rgba(79,142,247,0.5)'}
-                  onBlur={(e) => e.target.style.borderColor = 'rgba(26, 39, 68, 0.8)'}
-                  placeholder="••••••••••"
-                />
-                <button type="button" onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors">
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={submitting}
-              className="w-full py-3.5 rounded-xl text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              style={{
-                background: submitting ? 'rgba(37,99,235,0.5)' : 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)',
-                boxShadow: submitting ? 'none' : '0 8px 24px rgba(37,99,235,0.3)'
-              }}
-            >
-              {submitting
-                ? <><Loader2 className="w-4 h-4 animate-spin" /> Authenticating...</>
-                : <><Shield className="w-4 h-4" /> Sign In to Admin Panel</>
-              }
-            </button>
-          </form>
-
-          {/* Divider */}
-          <div className="mt-6 pt-6 border-t border-[#1a2744]">
-            <div className="flex items-center justify-center gap-4 text-xs text-gray-500">
-              <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-green-500" />
-                Secure connection
-              </div>
-              <div className="flex items-center gap-1.5">
-                <Zap className="w-3 h-3 text-blue-500" />
-                JWT Protected
-              </div>
+            {/* Stats */}
+            <div className="mt-10 grid grid-cols-2 gap-3 w-full max-w-xs">
+              {[
+                { val: '1.2K+', label: 'Articles' },
+                { val: '500+', label: 'Writers' },
+                { val: '50K+', label: 'Readers' },
+                { val: '99.9%', label: 'Uptime' },
+              ].map(({ val, label }) => (
+                <div key={label} className="text-center py-3 px-2 rounded-xl"
+                  style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)' }}>
+                  <p className="text-lg font-bold text-white" style={{ fontFamily: 'var(--font-mono)' }}>{val}</p>
+                  <p className="text-xs text-blue-200 mt-0.5">{label}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
-
-        <p className="text-center text-xs text-gray-600 mt-6">
-          Not an admin?{' '}
-          <Link href="/login" className="text-gray-400 hover:text-white transition-colors font-semibold">
-            User login →
-          </Link>
-        </p>
       </div>
+
+      {/* ── MOBILE ── */}
+      <div className="md:hidden flex flex-col items-center justify-center min-h-screen w-full px-8 py-16 bg-white dark:bg-[#0a0a0f]">
+        <div className="w-full max-w-sm">{FormContent}</div>
+      </div>
+
     </div>
   );
 }
