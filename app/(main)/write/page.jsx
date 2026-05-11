@@ -6,7 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import dynamic from 'next/dynamic';
 import api from '@/services/api';
 import toast from 'react-hot-toast';
-import { Save, Send, Upload, X, Loader2, PenSquare, Tag, Image as ImageIcon, Zap } from 'lucide-react';
+import { Save, Send, Upload, X, Loader2, PenSquare, Tag, Image as ImageIcon, Zap, Plus, Trash2, HelpCircle, AlignLeft } from 'lucide-react';
 import { CATEGORIES } from '@/utils/helpers';
 
 const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ssr: false });
@@ -17,7 +17,8 @@ function WriteContent() {
   const searchParams = useSearchParams();
   const editId = searchParams.get('edit');
 
-  const [form, setForm] = useState({ title: '', content: '', category: '', tags: '' });
+  const [form, setForm] = useState({ title: '', content: '', category: '', tags: '', conclusion: '' });
+  const [faqs, setFaqs] = useState([{ question: '', answer: '' }]);
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState('');
   const [saving, setSaving] = useState(false);
@@ -32,7 +33,8 @@ function WriteContent() {
       api.get('/blogs/my').then(({ data }) => {
         const blog = data.blogs.find((b) => b._id === editId);
         if (blog) {
-          setForm({ title: blog.title, content: blog.content || '', category: blog.category, tags: blog.tags?.join(', ') || '' });
+          setForm({ title: blog.title, content: blog.content || '', category: blog.category, tags: blog.tags?.join(', ') || '', conclusion: blog.conclusion || '' });
+          if (blog.faqs?.length) setFaqs(blog.faqs);
           if (blog.thumbnail) setThumbnailPreview(blog.thumbnail);
         }
       });
@@ -54,6 +56,10 @@ function WriteContent() {
     fd.append('category', form.category);
     fd.append('tags', form.tags);
     fd.append('status', status);
+    fd.append('conclusion', form.conclusion);
+    // Only include non-empty FAQs
+    const validFaqs = faqs.filter((f) => f.question.trim() && f.answer.trim());
+    fd.append('faqs', JSON.stringify(validFaqs));
     if (thumbnail) fd.append('thumbnail', thumbnail);
     return fd;
   };
@@ -206,6 +212,83 @@ function WriteContent() {
             </label>
           </div>
           <RichTextEditor content={form.content} onChange={(html) => setForm({ ...form, content: html })} />
+        </div>
+
+        {/* FAQ Section */}
+        <div className="rounded-2xl border border-gray-100 dark:border-[#1a2744] bg-white dark:bg-[#0d1526] p-6">
+          <div className="flex items-center justify-between mb-4">
+            <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.1em] text-gray-500 dark:text-gray-400">
+              <HelpCircle className="w-3.5 h-3.5" /> FAQs (Frequently Asked Questions)
+            </label>
+            <button
+              type="button"
+              onClick={() => setFaqs([...faqs, { question: '', answer: '' }])}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800/50 hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-colors"
+            >
+              <Plus className="w-3.5 h-3.5" /> Add FAQ
+            </button>
+          </div>
+          <div className="space-y-4">
+            {faqs.map((faq, i) => (
+              <div key={i} className="rounded-xl border border-gray-100 dark:border-[#1a2744] p-4 space-y-3 relative">
+                <button
+                  type="button"
+                  onClick={() => setFaqs(faqs.filter((_, idx) => idx !== i))}
+                  className="absolute top-3 right-3 p-1 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors"
+                  aria-label="Remove FAQ"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+                <div>
+                  <label className="text-xs font-semibold text-gray-400 mb-1 block">Question {i + 1}</label>
+                  <input
+                    type="text"
+                    value={faq.question}
+                    onChange={(e) => {
+                      const updated = [...faqs];
+                      updated[i] = { ...updated[i], question: e.target.value };
+                      setFaqs(updated);
+                    }}
+                    placeholder="e.g. What is this article about?"
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-[#1a2744] bg-gray-50 dark:bg-[#060b18] text-gray-900 dark:text-white placeholder-gray-400 text-sm focus:outline-none focus:border-blue-500 dark:focus:border-blue-500/50 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-semibold text-gray-400 mb-1 block">Answer</label>
+                  <textarea
+                    value={faq.answer}
+                    onChange={(e) => {
+                      const updated = [...faqs];
+                      updated[i] = { ...updated[i], answer: e.target.value };
+                      setFaqs(updated);
+                    }}
+                    placeholder="Provide a clear, concise answer..."
+                    rows={3}
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-[#1a2744] bg-gray-50 dark:bg-[#060b18] text-gray-900 dark:text-white placeholder-gray-400 text-sm focus:outline-none focus:border-blue-500 dark:focus:border-blue-500/50 transition-colors resize-none"
+                  />
+                </div>
+              </div>
+            ))}
+            {faqs.length === 0 && (
+              <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-4">
+                No FAQs added yet. Click "Add FAQ" to include common questions.
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Conclusion Section */}
+        <div className="rounded-2xl border border-gray-100 dark:border-[#1a2744] bg-white dark:bg-[#0d1526] p-6">
+          <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.1em] text-gray-500 dark:text-gray-400 mb-3">
+            <AlignLeft className="w-3.5 h-3.5" /> Conclusion
+          </label>
+          <textarea
+            value={form.conclusion}
+            onChange={(e) => setForm({ ...form, conclusion: e.target.value })}
+            placeholder="Summarize your key takeaways and wrap up the article..."
+            rows={5}
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-[#1a2744] bg-gray-50 dark:bg-[#060b18] text-gray-900 dark:text-white placeholder-gray-400 text-sm focus:outline-none focus:border-blue-500 dark:focus:border-blue-500/50 transition-colors resize-none"
+          />
         </div>
 
         {/* Bottom actions */}

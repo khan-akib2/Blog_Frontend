@@ -4,6 +4,7 @@ import api from '@/services/api';
 import toast from 'react-hot-toast';
 import { Trash2, UserX, UserCheck, Loader2, ChevronLeft, ChevronRight, Users, Shield, Search } from 'lucide-react';
 import { formatDate } from '@/utils/helpers';
+import ConfirmModal from '@/components/ConfirmModal';
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState([]);
@@ -11,6 +12,7 @@ export default function AdminUsersPage() {
   const [pagination, setPagination] = useState({ total: 0, page: 1, pages: 1 });
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [confirmModal, setConfirmModal] = useState({ open: false, userId: null, userName: '' });
 
   useEffect(() => { fetchUsers(); }, [page]);
 
@@ -28,7 +30,13 @@ export default function AdminUsersPage() {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm('Delete this user and all their blogs?')) return;
+    const user = users.find((u) => u._id === id);
+    setConfirmModal({ open: true, userId: id, userName: user?.name || 'this user' });
+  };
+
+  const handleConfirmDelete = async () => {
+    const id = confirmModal.userId;
+    setConfirmModal({ open: false, userId: null, userName: '' });
     try {
       await api.delete(`/admin/users/${id}`);
       toast.success('User deleted');
@@ -192,6 +200,16 @@ export default function AdminUsersPage() {
           </button>
         </div>
       )}
+
+      {/* Confirm Delete Modal */}
+      <ConfirmModal
+        open={confirmModal.open}
+        title="Delete User"
+        message={`Delete "${confirmModal.userName}" and all their blogs? This action cannot be undone.`}
+        confirmText="Delete User"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setConfirmModal({ open: false, userId: null, userName: '' })}
+      />
     </div>
   );
 }

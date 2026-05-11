@@ -26,7 +26,7 @@ export default function AdminLoginPage() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const { data } = await api.post('/auth/login', {
+      const { data } = await api.post('/admin/login', {
         email: form.email,
         password: form.password,
       });

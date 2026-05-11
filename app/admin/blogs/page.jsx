@@ -10,6 +10,7 @@ import {
   ChevronRight, Loader2, Filter, FileText, AlertCircle
 } from 'lucide-react';
 import { formatDate, getStatusColor } from '@/utils/helpers';
+import ConfirmModal from '@/components/ConfirmModal';
 
 const statusConfig = {
   pending:  { color: '#f59e0b', bg: 'rgba(245,158,11,0.12)',  border: 'rgba(245,158,11,0.25)'  },
@@ -38,6 +39,7 @@ function AdminBlogsContent() {
   const [page, setPage] = useState(1);
   const [rejectModal, setRejectModal] = useState(null);
   const [rejectReason, setRejectReason] = useState('');
+  const [deleteModal, setDeleteModal] = useState({ open: false, blogId: null, blogTitle: '' });
 
   useEffect(() => { fetchBlogs(); }, [statusFilter, page, search]);
 
@@ -77,7 +79,13 @@ function AdminBlogsContent() {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm('Delete this blog permanently?')) return;
+    const blog = blogs.find((b) => b._id === id);
+    setDeleteModal({ open: true, blogId: id, blogTitle: blog?.title || 'this blog' });
+  };
+
+  const handleConfirmDelete = async () => {
+    const id = deleteModal.blogId;
+    setDeleteModal({ open: false, blogId: null, blogTitle: '' });
     try {
       await api.delete(`/blogs/${id}`);
       toast.success('Blog deleted');
@@ -328,6 +336,16 @@ function AdminBlogsContent() {
           </div>
         </div>
       )}
+
+      {/* Confirm Delete Modal */}
+      <ConfirmModal
+        open={deleteModal.open}
+        title="Delete Blog"
+        message={`Permanently delete "${deleteModal.blogTitle}"? This cannot be undone.`}
+        confirmText="Delete Blog"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeleteModal({ open: false, blogId: null, blogTitle: '' })}
+      />
     </div>
   );
 }

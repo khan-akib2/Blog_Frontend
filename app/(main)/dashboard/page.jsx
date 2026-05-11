@@ -10,6 +10,7 @@ import {
   FileText, CheckCircle, AlertCircle, BookOpen, TrendingUp, Zap
 } from 'lucide-react';
 import { formatDate, getStatusColor } from '@/utils/helpers';
+import ConfirmModal from '@/components/ConfirmModal';
 
 const statusConfig = {
   approved: { color: '#34d399', bg: 'rgba(52,211,153,0.1)',  border: 'rgba(52,211,153,0.2)'  },
@@ -26,6 +27,7 @@ export default function DashboardPage() {
   const [statusFilter, setStatusFilter] = useState('');
   const [pagination, setPagination] = useState({ total: 0, page: 1, pages: 1 });
   const [page, setPage] = useState(1);
+  const [deleteModal, setDeleteModal] = useState({ open: false, blogId: null, blogTitle: '' });
 
   useEffect(() => {
     if (!authLoading && !user) router.push('/login');
@@ -51,7 +53,13 @@ export default function DashboardPage() {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm('Delete this blog?')) return;
+    const blog = blogs.find((b) => b._id === id);
+    setDeleteModal({ open: true, blogId: id, blogTitle: blog?.title || 'this blog' });
+  };
+
+  const handleConfirmDelete = async () => {
+    const id = deleteModal.blogId;
+    setDeleteModal({ open: false, blogId: null, blogTitle: '' });
     try {
       await api.delete(`/blogs/${id}`);
       toast.success('Blog deleted');
@@ -208,6 +216,16 @@ export default function DashboardPage() {
           </Link>
         </div>
       )}
+
+      {/* Confirm Delete Modal */}
+      <ConfirmModal
+        open={deleteModal.open}
+        title="Delete Blog"
+        message={`Delete "${deleteModal.blogTitle}"? This action cannot be undone.`}
+        confirmText="Delete Blog"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setDeleteModal({ open: false, blogId: null, blogTitle: '' })}
+      />
     </div>
   );
 }

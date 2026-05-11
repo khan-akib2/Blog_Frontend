@@ -1,15 +1,47 @@
-import Link from 'next/link';
 import { Clock, Eye, Heart, PenSquare, ArrowUpRight } from 'lucide-react';
 import { formatDate } from '@/utils/helpers';
+import Link from 'next/link';
 
-export default function BlogCard({ blog, compact = false }) {
+export default function BlogCard({ blog, compact = false, onOpenModal }) {
   if (!blog) return null;
+
+  // If onOpenModal is provided, clicking the card opens the modal.
+  // Otherwise fall back to navigating to the blog page (e.g. in admin preview).
+  const handleCardClick = (e) => {
+    if (!onOpenModal) return; // let the Link handle it
+    e.preventDefault();
+    onOpenModal(blog);
+  };
+
+  const ThumbnailWrapper = onOpenModal
+    ? ({ children }) => (
+        <button onClick={handleCardClick} className="relative block overflow-hidden w-full text-left" aria-label={`Read ${blog.title}`}>
+          {children}
+        </button>
+      )
+    : ({ children }) => (
+        <Link href={`/blogs/${blog.slug}`} className="relative block overflow-hidden">
+          {children}
+        </Link>
+      );
+
+  const TitleWrapper = onOpenModal
+    ? ({ children }) => (
+        <button onClick={handleCardClick} className="mb-2 block text-left w-full">
+          {children}
+        </button>
+      )
+    : ({ children }) => (
+        <Link href={`/blogs/${blog.slug}`} className="mb-2 block">
+          {children}
+        </Link>
+      );
 
   return (
     <article className="group flex flex-col overflow-hidden rounded-2xl border border-gray-100 dark:border-[#1a2744] bg-white dark:bg-[#0d1526] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-blue-500/10 dark:hover:shadow-blue-900/20 hover:border-blue-200/80 dark:hover:border-blue-800/50">
 
       {/* Thumbnail */}
-      <Link href={`/blogs/${blog.slug}`} className="relative block overflow-hidden">
+      <ThumbnailWrapper>
         <div className={`relative overflow-hidden ${compact ? 'h-44' : 'h-52'} bg-gray-100 dark:bg-[#111d35]`}>
           {blog.thumbnail ? (
             <img
@@ -37,7 +69,7 @@ export default function BlogCard({ blog, compact = false }) {
             </div>
           </div>
         </div>
-      </Link>
+      </ThumbnailWrapper>
 
       {/* Content */}
       <div className="flex flex-1 flex-col p-5">
@@ -53,7 +85,8 @@ export default function BlogCard({ blog, compact = false }) {
           )}
           <div className="flex items-center gap-1.5 min-w-0">
             <Link href={`/author/${blog.author?._id}`}
-              className="text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors truncate">
+              className="text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors truncate"
+              onClick={(e) => e.stopPropagation()}>
               {blog.author?.name}
             </Link>
             <span className="text-gray-300 dark:text-[#1a2744] flex-shrink-0">·</span>
@@ -62,12 +95,12 @@ export default function BlogCard({ blog, compact = false }) {
         </div>
 
         {/* Title */}
-        <Link href={`/blogs/${blog.slug}`} className="mb-2 block">
+        <TitleWrapper>
           <h2 className={`font-bold leading-snug text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors ${compact ? 'line-clamp-2 text-base' : 'line-clamp-2 text-[1.05rem]'}`}
             style={{ fontFamily: 'var(--font-serif)', letterSpacing: '-0.01em' }}>
             {blog.title}
           </h2>
-        </Link>
+        </TitleWrapper>
 
         {/* Excerpt */}
         {!compact && (
@@ -103,10 +136,19 @@ export default function BlogCard({ blog, compact = false }) {
               {blog.likes?.length || 0}
             </span>
           </div>
-          <Link href={`/blogs/${blog.slug}`}
-            className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            Read →
-          </Link>
+          {onOpenModal ? (
+            <button
+              onClick={handleCardClick}
+              className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              Read →
+            </button>
+          ) : (
+            <Link href={`/blogs/${blog.slug}`}
+              className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline underline-offset-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              Read →
+            </Link>
+          )}
         </div>
       </div>
     </article>

@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import BlogCard from '@/components/BlogCard';
+import BlogModal from '@/components/BlogModal';
 import SkeletonCard from '@/components/SkeletonCard';
 import api from '@/services/api';
 import { Search, ChevronLeft, ChevronRight, SlidersHorizontal, BookOpen } from 'lucide-react';
@@ -18,6 +19,10 @@ function BlogsContent() {
   const [category, setCategory] = useState(searchParams.get('category') || '');
   const [sort, setSort] = useState(searchParams.get('sort') || '-createdAt');
   const [page, setPage] = useState(Number(searchParams.get('page')) || 1);
+
+  // Modal state — holds the full blog object fetched on click
+  const [modalBlog, setModalBlog] = useState(null);
+  const [modalLoading, setModalLoading] = useState(false);
 
   const fetchBlogs = useCallback(async () => {
     setLoading(true);
@@ -42,6 +47,20 @@ function BlogsContent() {
     setPage(1);
     fetchBlogs();
   };
+
+  // Fetch full blog (with content, faqs, conclusion) then open modal
+  const handleOpenModal = useCallback(async (cardBlog) => {
+    setModalLoading(true);
+    try {
+      const { data } = await api.get(`/blogs/${cardBlog.slug}`);
+      setModalBlog(data.blog);
+    } catch {
+      // Fallback: open with card data (content will be missing but modal still shows)
+      setModalBlog(cardBlog);
+    } finally {
+      setModalLoading(false);
+    }
+  }, []);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -119,7 +138,9 @@ function BlogsContent() {
         </div>
       ) : blogs.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {blogs.map((blog) => <BlogCard key={blog._id} blog={blog} />)}
+          {blogs.map((blog) => (
+            <BlogCard key={blog._id} blog={blog} onOpenModal={handleOpenModal} />
+          ))}
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-gray-200 dark:border-[#1a2744] py-24 text-center">
@@ -170,6 +191,18 @@ function BlogsContent() {
             <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-400" />
           </button>
         </div>
+      )}
+
+      {/* Loading overlay while fetching full blog for modal */}
+      {modalLoading && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)' }}>
+          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
+
+      {/* Blog Modal */}
+      {modalBlog && (
+        <BlogModal blog={modalBlog} onClose={() => setModalBlog(null)} />
       )}
     </div>
   );

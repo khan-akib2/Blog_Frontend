@@ -5,7 +5,7 @@ import {
   Globe, Cpu, Rocket, Sparkles, Layers, Eye, Clock, Heart,
   FileCheck, Workflow, Zap, Lock
 } from 'lucide-react';
-import BlogCard from '@/components/BlogCard';
+import BlogGridWithModal from '@/components/BlogGridWithModal';
 import HeroVisual from '@/components/HeroVisual';
 
 async function getHomeData() {
@@ -217,9 +217,7 @@ export default async function HomePage() {
                 View all <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
-            <div className="lp-blog-grid">
-              {trending.slice(0, 3).map((blog) => <BlogCard key={blog._id} blog={blog} />)}
-            </div>
+            <BlogGridWithModal blogs={trending.slice(0, 3)} />
           </div>
         </section>
       )}
@@ -240,9 +238,7 @@ export default async function HomePage() {
           </div>
 
           {latest.length > 0 ? (
-            <div className="lp-blog-grid">
-              {latest.map((blog) => <BlogCard key={blog._id} blog={blog} />)}
-            </div>
+            <BlogGridWithModal blogs={latest} />
           ) : (
             <div className="lp-empty-state">
               <div className="lp-empty-icon">
