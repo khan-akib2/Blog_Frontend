@@ -1,7 +1,9 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-import { Zap, GitBranch, AtSign, Link2, Mail, ArrowUpRight, Code2, Globe, Shield, CheckCircle, Send } from 'lucide-react';
+import { Zap, GitBranch, AtSign, Link2, Mail, ArrowUpRight, Code2, Globe, Shield, CheckCircle, Send, Loader2 } from 'lucide-react';
+import api from '@/services/api';
+import toast from 'react-hot-toast';
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -9,16 +11,20 @@ export default function Footer() {
   const [subscribed, setSubscribed] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
     if (!email || !email.includes('@')) return;
     setSubscribing(true);
-    // Simulate subscription (replace with real API call when ready)
-    setTimeout(() => {
+    try {
+      const { data } = await api.post('/newsletter/subscribe', { email });
       setSubscribed(true);
-      setSubscribing(false);
       setEmail('');
-    }, 800);
+      toast.success(data.message || 'Successfully subscribed!');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to subscribe. Please try again.');
+    } finally {
+      setSubscribing(false);
+    }
   };
 
   return (
@@ -186,11 +192,11 @@ export default function Footer() {
                 <button
                   type="submit"
                   disabled={subscribing}
-                  className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-60 flex-shrink-0"
+                  className="px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:-translate-y-0.5 disabled:opacity-60 flex-shrink-0 flex items-center gap-2"
                   style={{ background: '#2563eb' }}
                   suppressHydrationWarning
                 >
-                  {subscribing ? '...' : 'Subscribe'}
+                  {subscribing ? <><Loader2 className="w-4 h-4 animate-spin" /> Subscribing...</> : 'Subscribe'}
                 </button>
               </form>
             )}
