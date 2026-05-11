@@ -6,7 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import dynamic from 'next/dynamic';
 import api from '@/services/api';
 import toast from 'react-hot-toast';
-import { Save, Send, Upload, X, Loader2, PenSquare, Tag, Image as ImageIcon, Zap, Plus, Trash2, HelpCircle, AlignLeft } from 'lucide-react';
+import { Save, Send, Upload, X, Loader2, PenSquare, Tag, Image as ImageIcon, Zap, Plus, Trash2, HelpCircle, AlignLeft, Video } from 'lucide-react';
 import { CATEGORIES } from '@/utils/helpers';
 
 const RichTextEditor = dynamic(() => import('@/components/RichTextEditor'), { ssr: false });
@@ -21,6 +21,7 @@ function WriteContent() {
   const [faqs, setFaqs] = useState([{ question: '', answer: '' }]);
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState('');
+  const [thumbnailType, setThumbnailType] = useState('image'); // 'image' | 'video'
   const [saving, setSaving] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -36,6 +37,7 @@ function WriteContent() {
           setForm({ title: blog.title, content: blog.content || '', category: blog.category, tags: blog.tags?.join(', ') || '', conclusion: blog.conclusion || '' });
           if (blog.faqs?.length) setFaqs(blog.faqs);
           if (blog.thumbnail) setThumbnailPreview(blog.thumbnail);
+          if (blog.thumbnailType) setThumbnailType(blog.thumbnailType);
         }
       });
     }
@@ -44,8 +46,11 @@ function WriteContent() {
   const handleThumbnail = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) return toast.error('Image must be under 5MB');
+    const isVideo = file.type.startsWith('video/');
+    const maxSize = isVideo ? 100 * 1024 * 1024 : 5 * 1024 * 1024;
+    if (file.size > maxSize) return toast.error(isVideo ? 'Video must be under 100MB' : 'Image must be under 5MB');
     setThumbnail(file);
+    setThumbnailType(isVideo ? 'video' : 'image');
     setThumbnailPreview(URL.createObjectURL(file));
   };
 
@@ -146,19 +151,27 @@ function WriteContent() {
           />
         </div>
 
-        {/* Thumbnail */}
+        {/* Thumbnail / Media */}
         <div className="rounded-2xl border border-gray-100 dark:border-[#1a2744] bg-white dark:bg-[#0d1526] p-6">
           <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.1em] text-gray-500 dark:text-gray-400 mb-3">
-            <ImageIcon className="w-3.5 h-3.5" /> Cover Image
+            <ImageIcon className="w-3.5 h-3.5" /> Cover Media (Image or Video)
           </label>
           {thumbnailPreview ? (
             <div className="relative rounded-xl overflow-hidden h-52">
-              <img src={thumbnailPreview} alt="Thumbnail" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-              <button onClick={() => { setThumbnail(null); setThumbnailPreview(''); }}
+              {thumbnailType === 'video' ? (
+                <video src={thumbnailPreview} className="w-full h-full object-cover" controls muted playsInline />
+              ) : (
+                <img src={thumbnailPreview} alt="Thumbnail" className="w-full h-full object-cover" />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+              <button onClick={() => { setThumbnail(null); setThumbnailPreview(''); setThumbnailType('image'); }}
                 className="absolute top-3 right-3 p-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors shadow-lg">
                 <X className="w-4 h-4" />
               </button>
+              <span className="absolute bottom-3 left-3 px-2 py-1 rounded-lg text-xs font-bold text-white bg-black/50 backdrop-blur-sm flex items-center gap-1">
+                {thumbnailType === 'video' ? <Video className="w-3 h-3" /> : <ImageIcon className="w-3 h-3" />}
+                {thumbnailType === 'video' ? 'Video' : 'Image'}
+              </span>
             </div>
           ) : (
             <label className="flex flex-col items-center justify-center h-44 border-2 border-dashed border-gray-200 dark:border-[#1a2744] rounded-xl cursor-pointer hover:border-blue-400 dark:hover:border-blue-600 transition-colors bg-gray-50 dark:bg-[#060b18] group">
@@ -166,9 +179,9 @@ function WriteContent() {
                 style={{ background: 'linear-gradient(135deg, rgba(37,99,235,0.1), rgba(124,58,237,0.1))' }}>
                 <Upload className="w-5 h-5 text-blue-500" />
               </div>
-              <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">Click to upload cover image</span>
-              <span className="text-xs text-gray-400 dark:text-gray-500 mt-1">PNG, JPG up to 5MB</span>
-              <input type="file" accept="image/*" onChange={handleThumbnail} className="hidden" />
+              <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">Click to upload cover image or video</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500 mt-1">PNG, JPG, WEBP up to 5MB · MP4, MOV up to 100MB</span>
+              <input type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm" onChange={handleThumbnail} className="hidden" />
             </label>
           )}
         </div>
