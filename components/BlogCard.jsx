@@ -48,6 +48,7 @@ export default function BlogCard({ blog, compact = false, onOpenModal }) {
               src={blog.thumbnail}
               alt={blog.title}
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              style={{ objectPosition: blog.thumbnailPosition || '50% 50%' }}
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center"

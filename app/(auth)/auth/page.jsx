@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { GoogleLogin } from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
 import api from '@/services/api';
 import toast from 'react-hot-toast';
 import { Eye, EyeOff, User, Mail, Lock, Loader2, ArrowLeft } from 'lucide-react';
@@ -11,10 +11,20 @@ const inputCls = "w-full border-b bg-transparent py-3 pr-8 text-sm placeholder-g
 const btnCls   = "w-full rounded-full py-3.5 text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-50 flex items-center justify-center";
 const btnStyle = { background: 'linear-gradient(135deg,#3b82f6,#1d4ed8)', boxShadow: '0 4px 20px rgba(59,130,246,0.5)' };
 
+// Google SVG logo
+const GoogleIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+    <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+    <path d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z" fill="#FBBC05"/>
+    <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+  </svg>
+);
+
 function AuthContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { login, googleLogin, updateUser } = useAuth();
+  const { login, updateUser } = useAuth();
 
   const initialMode = searchParams.get('mode') === 'register' ? 'register' : 'login';
   const [mode, setMode] = useState(initialMode);
@@ -39,17 +49,19 @@ function AuthContent() {
 
   const switchMode = (to) => { if (mode !== to) setMode(to); };
 
+  // ── Login ──────────────────────────────────────────────────────────────────
   const handleLogin = async (e) => {
     e.preventDefault(); setLoading(true);
     try {
       const user = await login(loginForm.email, loginForm.password);
-      if (user.role === 'admin') { router.push('/admin-login'); return; }
+      if (user.role === 'admin') { router.push('/admin'); return; }
       toast.success(`Welcome back, ${user.name}!`);
       router.push('/dashboard');
     } catch (err) { toast.error(err.response?.data?.message || 'Invalid credentials'); }
     finally { setLoading(false); }
   };
 
+  // ── Register ───────────────────────────────────────────────────────────────
   const handleRegister = async (e) => {
     e.preventDefault();
     if (regForm.password !== regForm.confirm) return toast.error('Passwords do not match');
@@ -64,6 +76,7 @@ function AuthContent() {
     finally { setLoading(false); }
   };
 
+  // ── OTP ────────────────────────────────────────────────────────────────────
   const handleOtpChange = (i, v) => {
     if (!/^\d*$/.test(v)) return;
     const n = [...otp]; n[i] = v.slice(-1); setOtp(n);
@@ -102,46 +115,60 @@ function AuthContent() {
     finally { setResending(false); }
   };
 
-  const handleGoogle = async (credentialResponse) => {
-    setGLoading(true);
-    try {
-      const user = await googleLogin(credentialResponse.credential);
-      if (user.role === 'admin') { router.push('/admin-login'); return; }
-      toast.success(`Welcome, ${user.name}!`); router.push('/dashboard');
-    } catch (err) { toast.error(err.response?.data?.message || 'Google sign-in failed'); }
-    finally { setGLoading(false); }
-  };
+  // ── Google (custom button, implicit flow) ──────────────────────────────────
+  const triggerGoogle = useGoogleLogin({
+    flow: 'implicit',
+    onSuccess: async (tokenResponse) => {
+      setGLoading(true);
+      try {
+        const { data } = await api.post('/auth/google-token', { access_token: tokenResponse.access_token });
+        const key = data.user.role === 'admin' ? 'admin_token' : 'user_token';
+        sessionStorage.setItem(key, data.token);
+        api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
+        updateUser(data.user);
+        if (data.user.role === 'admin') { router.push('/admin'); return; }
+        toast.success(`Welcome, ${data.user.name}!`);
+        router.push('/dashboard');
+      } catch (err) {
+        toast.error(err.response?.data?.message || 'Google sign-in failed');
+      } finally {
+        setGLoading(false);
+      }
+    },
+    onError: () => {
+      toast.error('Google sign-in failed. Please try again.');
+      setGLoading(false);
+    },
+    onNonOAuthError: () => {
+      // Fired when user closes the popup or cancels — reset loading silently
+      setGLoading(false);
+    },
+  });
 
-  const handleGoogleError = () => {
-    toast.error('Google sign-in failed. Please try again.');
-    setGLoading(false);
-  };
+  const GoogleBtn = (
+    <button
+      type="button"
+      onClick={() => triggerGoogle()}
+      disabled={gLoading}
+      className="group w-full flex items-center justify-center gap-3  transition-colors duration-200 disabled:opacity-50 focus:outline-none"
+      style={{ background: 'transparent' }}
+    >
+      <span className="flex-shrink-0">
+        {gLoading
+          ? <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
+          : <GoogleIcon />
+        }
+      </span>
+      <span className="text-sm text-gray-400 dark:text-gray-600 transition-colors">
+        {gLoading ? 'Connecting…' : 'Continue with Google'}
+      </span>
+    </button>
+  );
 
   const isLogin = mode === 'login';
   const isOtp   = mode === 'otp';
 
-  // ── Google button (using @react-oauth/google GoogleLogin component) ────────
-  const GoogleLink = (
-    <div className="flex justify-center">
-      {gLoading ? (
-        <div className="flex items-center gap-2 text-xs text-gray-500">
-          <Loader2 className="h-3 w-3 animate-spin" /> Connecting…
-        </div>
-      ) : (
-        <GoogleLogin
-          onSuccess={handleGoogle}
-          onError={handleGoogleError}
-          useOneTap={false}
-          theme="outline"
-          size="medium"
-          text="continue_with"
-          shape="pill"
-        />
-      )}
-    </div>
-  );
-
-  // ── Forms ─────────────────────────────────────────────────────────────────
+  // ── Forms ──────────────────────────────────────────────────────────────────
   const LoginForm = (
     <>
       <h1 className="mb-1 text-5xl font-bold text-gray-900 dark:text-white" style={{ fontFamily: 'var(--font-sans)', letterSpacing: '-0.02em' }}>Login</h1>
@@ -161,8 +188,12 @@ function AuthContent() {
           <button type="submit" disabled={loading} className={btnCls} style={btnStyle}>
             {loading ? <Loader2 className="h-5 w-5 animate-spin"/> : 'Login'}
           </button>
-          <div className="flex items-center gap-3"><div className="flex-1 h-px bg-gray-200 dark:bg-gray-800"/><span className="text-xs text-gray-400">or</span><div className="flex-1 h-px bg-gray-200 dark:bg-gray-800"/></div>
-          {GoogleLink}
+          <div className="flex items-center gap-3">
+            <div className="flex-1 h-px bg-gray-200 dark:bg-gray-800"/>
+            <span className="text-xs text-gray-400">or</span>
+            <div className="flex-1 h-px bg-gray-200 dark:bg-gray-800"/>
+          </div>
+          {GoogleBtn}
         </div>
         <p className="text-center text-sm text-gray-500">
           Don&apos;t have an account?{' '}
@@ -199,8 +230,12 @@ function AuthContent() {
           <button type="submit" disabled={loading} className={btnCls} style={btnStyle}>
             {loading ? <Loader2 className="h-5 w-5 animate-spin"/> : 'Sign Up'}
           </button>
-          <div className="flex items-center gap-3"><div className="flex-1 h-px bg-gray-200 dark:bg-gray-800"/><span className="text-xs text-gray-400">or</span><div className="flex-1 h-px bg-gray-200 dark:bg-gray-800"/></div>
-          {GoogleLink}
+          <div className="flex items-center gap-3">
+            <div className="flex-1 h-px bg-gray-200 dark:bg-gray-800"/>
+            <span className="text-xs text-gray-400">or</span>
+            <div className="flex-1 h-px bg-gray-200 dark:bg-gray-800"/>
+          </div>
+          {GoogleBtn}
         </div>
         <p className="text-center text-sm text-gray-500">
           Already have an account?{' '}

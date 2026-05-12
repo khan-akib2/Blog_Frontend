@@ -166,7 +166,8 @@ export default function BlogModal({ blog: initialBlog, onClose }) {
           {/* Thumbnail */}
           {blog.thumbnail && (
             <div className="mb-7 rounded-xl overflow-hidden">
-              <img src={blog.thumbnail} alt={blog.title} className="w-full h-56 sm:h-72 object-cover" />
+              <img src={blog.thumbnail} alt={blog.title} className="w-full h-56 sm:h-72 object-cover"
+              style={{ objectPosition: blog.thumbnailPosition || '50% 50%' }} />
             </div>
           )}
 
@@ -331,7 +332,7 @@ export default function BlogModal({ blog: initialBlog, onClose }) {
             ) : (
               <div className="mb-6 p-4 rounded-xl border text-center text-sm text-gray-500 dark:text-gray-400"
                 style={{ background: 'var(--bg-subtle)', borderColor: 'var(--border)' }}>
-                <Link href="/login" onClick={onClose} className="text-blue-600 dark:text-blue-400 hover:underline">Login</Link> to leave a comment
+                <Link href="/auth?mode=login" onClick={onClose} className="text-blue-600 dark:text-blue-400 hover:underline">Login</Link> to leave a comment
               </div>
             )}
 

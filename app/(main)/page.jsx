@@ -11,20 +11,29 @@ import HeroVisual from '@/components/HeroVisual';
 async function getHomeData() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-    const [latestRes, trendingRes] = await Promise.all([
+    const [latestRes, trendingRes, featuredRes, editorsPickRes] = await Promise.all([
       fetch(`${baseUrl}/blogs?limit=6&sort=-createdAt`, { next: { revalidate: 10 } }),
       fetch(`${baseUrl}/blogs/trending`, { next: { revalidate: 10 } }),
+      fetch(`${baseUrl}/blogs/featured?type=featured`, { next: { revalidate: 10 } }),
+      fetch(`${baseUrl}/blogs/featured?type=editorsPick`, { next: { revalidate: 10 } }),
     ]);
     const latest = latestRes.ok ? await latestRes.json() : { blogs: [] };
     const trending = trendingRes.ok ? await trendingRes.json() : { blogs: [] };
-    return { latest: latest.blogs || [], trending: trending.blogs || [] };
+    const featured = featuredRes.ok ? await featuredRes.json() : { blogs: [] };
+    const editorsPick = editorsPickRes.ok ? await editorsPickRes.json() : { blogs: [] };
+    return {
+      latest: latest.blogs || [],
+      trending: trending.blogs || [],
+      featured: featured.blogs || [],
+      editorsPick: editorsPick.blogs || [],
+    };
   } catch {
-    return { latest: [], trending: [] };
+    return { latest: [], trending: [], featured: [], editorsPick: [] };
   }
 }
 
 export default async function HomePage() {
-  const { latest, trending } = await getHomeData();
+  const { latest, trending, featured, editorsPick } = await getHomeData();
 
   return (
     <div className="w-full">
@@ -56,7 +65,7 @@ export default async function HomePage() {
             </p>
 
             <div className="lp-cta-row">
-              <Link href="/register" className="lp-btn-primary">
+              <Link href="/auth?mode=register" className="lp-btn-primary">
                 Start writing free
                 <ArrowRight className="lp-btn-icon" />
               </Link>
@@ -223,6 +232,46 @@ export default async function HomePage() {
       )}
 
       {/* ══════════════════════════════════════
+          FEATURED BLOGS
+      ══════════════════════════════════════ */}
+      {featured.length > 0 && (
+        <section className="lp-section lp-section-alt">
+          <div className="lp-section-inner">
+            <div className="lp-section-label">
+              <Star className="w-3.5 h-3.5 text-yellow-400" style={{ color: '#facc15' }} /> Featured
+            </div>
+            <div className="lp-section-row">
+              <h2 className="lp-section-heading mb-0">Featured Stories</h2>
+              <Link href="/blogs?sort=-createdAt" className="lp-text-link">
+                View all <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+            <BlogGridWithModal blogs={featured.slice(0, 3)} />
+          </div>
+        </section>
+      )}
+
+      {/* ══════════════════════════════════════
+          EDITOR'S PICK
+      ══════════════════════════════════════ */}
+      {editorsPick.length > 0 && (
+        <section className="lp-section">
+          <div className="lp-section-inner">
+            <div className="lp-section-label">
+              <BookOpen className="w-3.5 h-3.5 text-purple-400" style={{ color: '#a78bfa' }} /> Curated
+            </div>
+            <div className="lp-section-row">
+              <h2 className="lp-section-heading mb-0">Editor's Picks</h2>
+              <Link href="/blogs" className="lp-text-link">
+                Browse all <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+            <BlogGridWithModal blogs={editorsPick.slice(0, 3)} />
+          </div>
+        </section>
+      )}
+
+      {/* ══════════════════════════════════════
           LATEST POSTS
       ══════════════════════════════════════ */}
       <section className="lp-section">
@@ -317,7 +366,7 @@ export default async function HomePage() {
             Join a growing community of writers. Free forever.
           </p>
           <div className="lp-cta-btns">
-            <Link href="/register" className="lp-btn-primary lp-btn-lg">
+            <Link href="/auth?mode=register" className="lp-btn-primary lp-btn-lg">
               Create free account
               <ArrowRight className="lp-btn-icon" />
             </Link>

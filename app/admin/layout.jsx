@@ -5,8 +5,9 @@ import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import {
   LayoutDashboard, FileText, Users, Loader2, Zap, LogOut,
-  ChevronRight, Bell, Settings, Menu, X, Shield
+  ChevronRight, AlertTriangle, Menu, X, Shield,
 } from 'lucide-react';
+import NotificationBell from '@/components/NotificationBell';
 
 export default function AdminLayout({ children }) {
   const { user, loading, logout } = useAuth();
@@ -34,9 +35,10 @@ export default function AdminLayout({ children }) {
   }
 
   const navItems = [
-    { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, desc: 'Overview & analytics' },
-    { href: '/admin/blogs', label: 'Blogs', icon: FileText, desc: 'Manage content' },
-    { href: '/admin/users', label: 'Users', icon: Users, desc: 'Manage accounts' },
+    { href: '/admin',         label: 'Dashboard', icon: LayoutDashboard, desc: 'Overview & analytics' },
+    { href: '/admin/blogs',   label: 'Blogs',     icon: FileText,        desc: 'Manage content'      },
+    { href: '/admin/users',   label: 'Users',     icon: Users,           desc: 'Manage accounts'     },
+    { href: '/admin/reports', label: 'Reports',   icon: AlertTriangle,   desc: 'Reported content'    },
   ];
 
   const handleLogout = () => {
@@ -50,10 +52,11 @@ export default function AdminLayout({ children }) {
   return (
     <div className="flex min-h-screen" style={{ background: '#060b18', color: '#e8f0fe' }}>
 
-      {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col transition-transform duration-300 md:relative md:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
-        style={{ background: '#0d1526', borderRight: '1px solid #1a2744' }}>
-
+      {/* ── Sidebar ── */}
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col transition-transform duration-300 md:sticky md:top-0 md:h-screen md:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        style={{ background: '#0d1526', borderRight: '1px solid #1a2744' }}
+      >
         {/* Logo */}
         <div className="flex items-center gap-3 px-5 py-5" style={{ borderBottom: '1px solid #1a2744' }}>
           <div className="flex h-9 w-9 items-center justify-center rounded-xl flex-shrink-0"
@@ -86,11 +89,13 @@ export default function AdminLayout({ children }) {
                 style={active ? {
                   background: 'linear-gradient(135deg, rgba(37,99,235,0.15), rgba(124,58,237,0.15))',
                   borderLeft: '3px solid #4f8ef7',
-                  paddingLeft: '9px'
+                  paddingLeft: '9px',
                 } : {}}
               >
-                <div className={`flex h-8 w-8 items-center justify-center rounded-lg flex-shrink-0 transition-all ${active ? 'text-blue-400' : 'text-gray-500 group-hover:text-blue-400'}`}
-                  style={active ? { background: 'rgba(79,142,247,0.15)' } : {}}>
+                <div
+                  className={`flex h-8 w-8 items-center justify-center rounded-lg flex-shrink-0 transition-all ${active ? 'text-blue-400' : 'text-gray-500 group-hover:text-blue-400'}`}
+                  style={active ? { background: 'rgba(79,142,247,0.15)' } : {}}
+                >
                   <Icon className="w-4 h-4" />
                 </div>
                 <div className="min-w-0">
@@ -116,8 +121,10 @@ export default function AdminLayout({ children }) {
               <p className="text-xs text-gray-500 truncate">{user.email}</p>
             </div>
           </div>
-          <button onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-400 hover:text-red-400 hover:bg-red-950/20 transition-all duration-200">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-gray-400 hover:text-red-400 hover:bg-red-950/20 transition-all duration-200"
+          >
             <LogOut className="w-4 h-4" /> Sign Out
           </button>
         </div>
@@ -125,19 +132,25 @@ export default function AdminLayout({ children }) {
 
       {/* Mobile overlay */}
       {sidebarOpen && (
-        <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
-          onClick={() => setSidebarOpen(false)} />
+        <div
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
       )}
 
-      {/* Main content */}
+      {/* ── Main content ── */}
       <div className="flex-1 flex flex-col min-w-0">
 
         {/* Top header */}
-        <header className="flex items-center justify-between px-4 sm:px-6 py-4 sticky top-0 z-30"
-          style={{ background: 'rgba(6,11,24,0.9)', borderBottom: '1px solid #1a2744', backdropFilter: 'blur(16px)' }}>
+        <header
+          className="flex items-center justify-between px-4 sm:px-6 py-4 sticky top-0 z-30"
+          style={{ background: 'rgba(6,11,24,0.9)', borderBottom: '1px solid #1a2744', backdropFilter: 'blur(16px)' }}
+        >
           <div className="flex items-center gap-3">
-            <button onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-[#111d35] transition-colors md:hidden">
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-[#111d35] transition-colors md:hidden"
+            >
               {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
             <div>
@@ -155,12 +168,13 @@ export default function AdminLayout({ children }) {
           </div>
 
           <div className="flex items-center gap-2">
-            <button className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-[#111d35] transition-colors relative">
-              <Bell className="w-4.5 h-4.5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-blue-500" />
-            </button>
-            <Link href="/"
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-400 hover:text-white hover:bg-[#111d35] transition-colors">
+            {/* Functional notification bell — uses the same NotificationBell component as the main site */}
+            <NotificationBell />
+
+            <Link
+              href="/"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-400 hover:text-white hover:bg-[#111d35] transition-colors"
+            >
               ← Back to site
             </Link>
           </div>
@@ -173,13 +187,18 @@ export default function AdminLayout({ children }) {
       </div>
 
       {/* Mobile bottom nav */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 flex"
-        style={{ background: '#0d1526', borderTop: '1px solid #1a2744' }}>
+      <div
+        className="md:hidden fixed bottom-0 left-0 right-0 z-40 flex"
+        style={{ background: '#0d1526', borderTop: '1px solid #1a2744' }}
+      >
         {navItems.map(({ href, label, icon: Icon }) => {
           const active = pathname === href;
           return (
-            <Link key={href} href={href}
-              className={`flex-1 flex flex-col items-center py-3 text-xs font-semibold transition-colors ${active ? 'text-blue-400' : 'text-gray-500'}`}>
+            <Link
+              key={href}
+              href={href}
+              className={`flex-1 flex flex-col items-center py-3 text-xs font-semibold transition-colors ${active ? 'text-blue-400' : 'text-gray-500'}`}
+            >
               <Icon className="w-5 h-5 mb-1" /> {label}
             </Link>
           );

@@ -22,11 +22,11 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401 && typeof window !== 'undefined') {
       const path = window.location.pathname;
-      const isAuthPage = path === '/login' || path === '/register' || path === '/admin-login' || path === '/auth';
+      const isAuthPage = path === '/auth' || path === '/admin-login';
       if (!isAuthPage) {
         sessionStorage.removeItem('user_token');
         sessionStorage.removeItem('admin_token');
-        window.location.href = '/login';
+        window.location.href = '/auth?mode=login';
       }
     }
     return Promise.reject(error);

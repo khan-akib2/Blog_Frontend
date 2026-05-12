@@ -14,7 +14,7 @@ export default function ProfilePage() {
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   useEffect(() => {
-    if (!authLoading && !user) router.push('/login');
+    if (!authLoading && !user) router.push('/auth?mode=login');
     if (user) setForm({ name: user.name || '', bio: user.bio || '' });
   }, [user, authLoading]);
 

@@ -137,8 +137,8 @@ export default function Footer() {
               <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.12em] text-gray-400 dark:text-gray-500">Account</h3>
               <ul className="space-y-3">
                 {[
-                  ['Sign In', '/login'],
-                  ['Create Account', '/register'],
+                  ['Sign In', '/auth?mode=login'],
+                  ['Create Account', '/auth?mode=register'],
                   ['Admin Portal', '/admin-login'],
                 ].map(([label, href]) => (
                   <li key={href}>

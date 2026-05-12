@@ -28,13 +28,32 @@ export default function DashboardPage() {
   const [pagination, setPagination] = useState({ total: 0, page: 1, pages: 1 });
   const [page, setPage] = useState(1);
   const [deleteModal, setDeleteModal] = useState({ open: false, blogId: null, blogTitle: '' });
+  const [stats, setStats] = useState({ approved: 0, pending: 0, draft: 0, rejected: 0, total: 0 });
 
   useEffect(() => {
-    if (!authLoading && !user) router.push('/login');
+    if (!authLoading && !user) router.push('/auth?mode=login');
   }, [user, authLoading]);
 
   useEffect(() => {
-    if (user) fetchBlogs();
+    if (user) {
+      fetchBlogs();
+      // Fetch accurate counts for all statuses
+      Promise.all([
+        api.get('/blogs/my?limit=1'),
+        api.get('/blogs/my?limit=1&status=approved'),
+        api.get('/blogs/my?limit=1&status=pending'),
+        api.get('/blogs/my?limit=1&status=draft'),
+        api.get('/blogs/my?limit=1&status=rejected'),
+      ]).then(([all, approved, pending, draft, rejected]) => {
+        setStats({
+          total: all.data.pagination.total,
+          approved: approved.data.pagination.total,
+          pending: pending.data.pagination.total,
+          draft: draft.data.pagination.total,
+          rejected: rejected.data.pagination.total,
+        });
+      }).catch(() => {});
+    }
   }, [user, statusFilter, page]);
 
   const fetchBlogs = async () => {
@@ -76,10 +95,10 @@ export default function DashboardPage() {
   );
 
   const statItems = [
-    { label: 'Total',    value: pagination.total,                                    icon: BookOpen,    color: '#4f8ef7', glow: 'rgba(37,99,235,0.12)'   },
-    { label: 'Approved', value: blogs.filter(b => b.status === 'approved').length,   icon: CheckCircle, color: '#34d399', glow: 'rgba(52,211,153,0.12)'  },
-    { label: 'Pending',  value: blogs.filter(b => b.status === 'pending').length,    icon: Clock,       color: '#f59e0b', glow: 'rgba(245,158,11,0.12)'  },
-    { label: 'Drafts',   value: blogs.filter(b => b.status === 'draft').length,      icon: FileText,    color: '#7a90b8', glow: 'rgba(122,144,184,0.1)'  },
+    { label: 'Total',    value: stats.total,    icon: BookOpen,    color: '#4f8ef7', glow: 'rgba(37,99,235,0.12)'   },
+    { label: 'Approved', value: stats.approved, icon: CheckCircle, color: '#34d399', glow: 'rgba(52,211,153,0.12)'  },
+    { label: 'Pending',  value: stats.pending,  icon: Clock,       color: '#f59e0b', glow: 'rgba(245,158,11,0.12)'  },
+    { label: 'Drafts',   value: stats.draft,    icon: FileText,    color: '#7a90b8', glow: 'rgba(122,144,184,0.1)'  },
   ];
 
   return (

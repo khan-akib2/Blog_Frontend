@@ -15,7 +15,7 @@ export default function BookmarksPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!authLoading && !user) router.push('/login');
+    if (!authLoading && !user) router.push('/auth?mode=login');
   }, [user, authLoading]);
 
   useEffect(() => {

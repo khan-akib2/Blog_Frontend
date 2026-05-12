@@ -27,5 +27,7 @@ export const getStatusColor = (status) => {
 
 export const CATEGORIES = [
   'Technology', 'Science', 'Health', 'Business', 'Travel',
-  'Food', 'Lifestyle', 'Education', 'Entertainment', 'Sports', 'Other',
+  'Food', 'Lifestyle', 'Education', 'Entertainment', 'Sports',
+  'Web Development', 'AI & Machine Learning', 'Cybersecurity',
+  'Mobile Apps', 'Career Guidance', 'Study Tips', 'Other',
 ];

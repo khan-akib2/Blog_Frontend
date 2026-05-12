@@ -72,7 +72,7 @@ export default function AdminLoginPage() {
         <Lock className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
         <p className="text-xs text-amber-600 dark:text-amber-400 leading-relaxed">
           This portal is for administrators only. Regular users should use the{' '}
-          <Link href="/login" className="underline font-semibold hover:text-amber-500">user login</Link> instead.
+          <Link href="/auth?mode=login" className="underline font-semibold hover:text-amber-500">user login</Link> instead.
         </p>
       </div>
 
@@ -127,7 +127,7 @@ export default function AdminLoginPage() {
 
       <p className="text-center text-xs text-gray-400 mt-4">
         Not an admin?{' '}
-        <Link href="/login" className="text-blue-500 hover:text-blue-400 font-semibold transition-colors">
+        <Link href="/auth?mode=login" className="text-blue-500 hover:text-blue-400 font-semibold transition-colors">
           User login →
         </Link>
       </p>

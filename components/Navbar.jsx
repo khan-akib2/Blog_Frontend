@@ -6,8 +6,9 @@ import { useTheme } from 'next-themes';
 import { useAuth } from '@/context/AuthContext';
 import {
   Sun, Moon, Menu, X, PenSquare, User, LogOut,
-  LayoutDashboard, Bookmark, ChevronDown, Zap, Shield
+  LayoutDashboard, Bookmark, ChevronDown, Zap, Shield, Bell
 } from 'lucide-react';
+import NotificationBell from '@/components/NotificationBell';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -97,6 +98,7 @@ export default function Navbar() {
 
           {user ? (
             <>
+              <NotificationBell />
               <Link
                 href="/write"
                 className="hidden md:inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5"
@@ -146,6 +148,7 @@ export default function Navbar() {
                         { href: '/dashboard', icon: LayoutDashboard, label: 'My Dashboard' },
                         { href: '/profile', icon: User, label: 'Edit Profile' },
                         { href: '/bookmarks', icon: Bookmark, label: 'Bookmarks' },
+                        { href: '/notifications', icon: Bell, label: 'Notifications' },
                       ].map(({ href, icon: Icon, label }) => (
                         <Link key={href} href={href}
                           className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#111d35] hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
@@ -171,11 +174,11 @@ export default function Navbar() {
             </>
           ) : (
             <div className="hidden items-center gap-2 md:flex">
-              <Link href="/login"
+              <Link href="/auth?mode=login"
                 className="rounded-lg px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#111d35] hover:text-gray-900 dark:hover:text-white transition-all duration-200">
                 Sign in
               </Link>
-              <Link href="/register"
+              <Link href="/auth?mode=register"
                 className="rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5"
                 style={{ background: '#2563eb' }}>
                 Get started
@@ -221,8 +224,8 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <Link href="/login" className="rounded-xl px-4 py-3 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#111d35]">Sign in</Link>
-                <Link href="/register" className="rounded-xl px-4 py-3 text-center text-sm font-semibold text-white"
+                <Link href="/auth?mode=login" className="rounded-xl px-4 py-3 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#111d35]">Sign in</Link>
+                <Link href="/auth?mode=register" className="rounded-xl px-4 py-3 text-center text-sm font-semibold text-white"
                   style={{ background: '#2563eb' }}>
                   Get started free
                 </Link>

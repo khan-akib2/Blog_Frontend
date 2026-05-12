@@ -2,15 +2,15 @@
 import { Suspense } from 'react';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 import api from '@/services/api';
 import toast from 'react-hot-toast';
 import {
-  CheckCircle, XCircle, Trash2, Eye, Search, ChevronLeft,
+  XCircle, Trash2, Eye, Search, ChevronLeft,
   ChevronRight, Loader2, Filter, FileText, AlertCircle
 } from 'lucide-react';
-import { formatDate, getStatusColor } from '@/utils/helpers';
+import { formatDate } from '@/utils/helpers';
 import ConfirmModal from '@/components/ConfirmModal';
+import AdminBlogPreviewModal from '@/components/AdminBlogPreviewModal';
 
 const statusConfig = {
   pending:  { color: '#f59e0b', bg: 'rgba(245,158,11,0.12)',  border: 'rgba(245,158,11,0.25)'  },
@@ -40,6 +40,7 @@ function AdminBlogsContent() {
   const [rejectModal, setRejectModal] = useState(null);
   const [rejectReason, setRejectReason] = useState('');
   const [deleteModal, setDeleteModal] = useState({ open: false, blogId: null, blogTitle: '' });
+  const [previewBlog, setPreviewBlog] = useState(null); // blog meta for preview modal
 
   useEffect(() => { fetchBlogs(); }, [statusFilter, page, search]);
 
@@ -155,7 +156,8 @@ function AdminBlogsContent() {
           {/* Mobile cards */}
           <div className="sm:hidden divide-y" style={{ borderColor: '#1a2744' }}>
             {blogs.map((blog) => (
-              <div key={blog._id} className="p-4 flex items-start gap-3 hover:bg-[#111d35] transition-colors">
+              <div key={blog._id} className="p-4 flex items-start gap-3 hover:bg-[#111d35] transition-colors cursor-pointer"
+                onClick={() => setPreviewBlog(blog)}>
                 {blog.thumbnail && (
                   <img src={blog.thumbnail} alt="" className="w-14 h-14 rounded-xl object-cover flex-shrink-0" />
                 )}
@@ -164,25 +166,11 @@ function AdminBlogsContent() {
                   <p className="text-xs text-gray-500 mb-2">{blog.category} · {blog.author?.name}</p>
                   <StatusBadge status={blog.status} />
                 </div>
-                <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-                  {blog.status === 'approved' && (
-                    <Link href={`/blogs/${blog.slug}`} target="_blank"
-                      className="p-1.5 rounded-lg text-gray-500 hover:text-blue-400 hover:bg-blue-950/20 transition-colors">
-                      <Eye className="w-4 h-4" />
-                    </Link>
-                  )}
-                  {blog.status === 'pending' && (
-                    <>
-                      <button onClick={() => handleApprove(blog._id)}
-                        className="p-1.5 rounded-lg text-gray-500 hover:text-green-400 hover:bg-green-950/20 transition-colors">
-                        <CheckCircle className="w-4 h-4" />
-                      </button>
-                      <button onClick={() => setRejectModal(blog._id)}
-                        className="p-1.5 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-950/20 transition-colors">
-                        <XCircle className="w-4 h-4" />
-                      </button>
-                    </>
-                  )}
+                <div className="flex flex-col items-end gap-1.5 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+                  <button onClick={() => setPreviewBlog(blog)}
+                    className="p-1.5 rounded-lg text-gray-500 hover:text-blue-400 hover:bg-blue-950/20 transition-colors">
+                    <Eye className="w-4 h-4" />
+                  </button>
                   <button onClick={() => handleDelete(blog._id)}
                     className="p-1.5 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-950/20 transition-colors">
                     <Trash2 className="w-4 h-4" />
@@ -212,7 +200,8 @@ function AdminBlogsContent() {
               </thead>
               <tbody>
                 {blogs.map((blog) => (
-                  <tr key={blog._id} className="border-t hover:bg-[#111d35] transition-colors" style={{ borderColor: '#1a2744' }}>
+                  <tr key={blog._id} className="border-t hover:bg-[#111d35] transition-colors cursor-pointer" style={{ borderColor: '#1a2744' }}
+                    onClick={() => setPreviewBlog(blog)}>
                     <td className="px-4 py-3.5">
                       <div className="flex items-center gap-3">
                         {blog.thumbnail ? (
@@ -224,7 +213,7 @@ function AdminBlogsContent() {
                           </div>
                         )}
                         <div className="min-w-0">
-                          <p className="text-sm font-semibold text-white truncate max-w-[200px]">{blog.title}</p>
+                          <p className="text-sm font-semibold text-white truncate max-w-[200px] hover:text-blue-400 transition-colors">{blog.title}</p>
                           <p className="text-xs text-gray-500">{blog.category}</p>
                         </div>
                       </div>
@@ -239,26 +228,12 @@ function AdminBlogsContent() {
                     <td className="px-4 py-3.5 hidden md:table-cell">
                       <p className="text-sm text-gray-400">{formatDate(blog.createdAt)}</p>
                     </td>
-                    <td className="px-4 py-3.5">
+                    <td className="px-4 py-3.5" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-1">
-                        {blog.status === 'approved' && (
-                          <Link href={`/blogs/${blog.slug}`} target="_blank"
-                            className="p-1.5 rounded-lg text-gray-500 hover:text-blue-400 hover:bg-blue-950/20 transition-colors" title="View live">
-                            <Eye className="w-4 h-4" />
-                          </Link>
-                        )}
-                        {blog.status === 'pending' && (
-                          <>
-                            <button onClick={() => handleApprove(blog._id)}
-                              className="p-1.5 rounded-lg text-gray-500 hover:text-green-400 hover:bg-green-950/20 transition-colors" title="Approve">
-                              <CheckCircle className="w-4 h-4" />
-                            </button>
-                            <button onClick={() => setRejectModal(blog._id)}
-                              className="p-1.5 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-950/20 transition-colors" title="Reject">
-                              <XCircle className="w-4 h-4" />
-                            </button>
-                          </>
-                        )}
+                        <button onClick={() => setPreviewBlog(blog)}
+                          className="p-1.5 rounded-lg text-gray-500 hover:text-blue-400 hover:bg-blue-950/20 transition-colors" title="Preview & Review">
+                          <Eye className="w-4 h-4" />
+                        </button>
                         <button onClick={() => handleDelete(blog._id)}
                           className="p-1.5 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-950/20 transition-colors" title="Delete">
                           <Trash2 className="w-4 h-4" />
@@ -298,7 +273,7 @@ function AdminBlogsContent() {
         </div>
       )}
 
-      {/* Reject Modal */}
+      {/* Reject Modal — kept for non-preview reject flow */}
       {rejectModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)' }}>
           <div className="w-full max-w-md rounded-2xl p-6 shadow-2xl" style={{ background: '#0d1526', border: '1px solid #1a2744' }}>
@@ -346,6 +321,16 @@ function AdminBlogsContent() {
         onConfirm={handleConfirmDelete}
         onCancel={() => setDeleteModal({ open: false, blogId: null, blogTitle: '' })}
       />
+
+      {/* Admin Blog Preview Modal */}
+      {previewBlog && (
+        <AdminBlogPreviewModal
+          blogMeta={previewBlog}
+          onClose={() => setPreviewBlog(null)}
+          onApprove={(id) => { setBlogs((prev) => prev.map((b) => b._id === id ? { ...b, status: 'approved' } : b)); }}
+          onReject={(id) => { setBlogs((prev) => prev.map((b) => b._id === id ? { ...b, status: 'rejected' } : b)); }}
+        />
+      )}
     </div>
   );
 }
